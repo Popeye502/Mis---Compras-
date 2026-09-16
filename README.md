@@ -79,7 +79,7 @@ mis-compras/
 
 ## 🌐 URL de la app
 
-> 🔗 **https://tu.github.io/mis-compras/**
+> 🔗 https://popeye502.github.io/Mis---Compras-/
 
 ---
 
