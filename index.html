@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ea580c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png">
+    <title>Mis Compras 🛒</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function() { console.log('Service Worker registrado ✅'); })
+                    .catch(function(err) { console.log('SW error:', err); });
+            });
+        }
+    </script>
+    <style>
+        :root {
+            --bg: #fefcf8;
+            --card: rgba(255,255,255,0.92);
+            --card-solid: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --accent: #ea580c;
+            --accent-strong: #c2410c;
+            --accent2: #16a34a;
+            --accent2-strong: #15803d;
+            --border: rgba(15,23,42,0.1);
+            --overlay: rgba(0,0,0,0.4);
+        }
+        * { font-family: 'Quicksand', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-image: linear-gradient(135deg, rgba(15,23,42,0.55), rgba(22,163,74,0.35)),
+            url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/67eb7796b4414f36b924c8a39fce6080.jpeg~tplv-0es2k971ck-image.image?rcl=202609170313438F2D46A90BE1455AE9E5&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792178080&x-signature=fEg%2BUvXaPzfXMYuCd0AoOCUQ%2Bks%3D');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========== PANTALLA DE CARGA ========== */
+        .pantalla-carga {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .pantalla-carga.oculta {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .carga-icono {
+            font-size: 60px;
+            animation: bounce 1s ease infinite alternate;
+            margin-bottom: 20px;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+        .carga-texto {
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+        .carga-barra {
+            width: 200px;
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .carga-progreso {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            width: 0%;
+            animation: cargar 1.8s ease forwards;
+        }
+        @keyframes cargar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ========== CONTENEDOR PRINCIPAL ========== */
+        .max-w-lg { 
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+        }
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 24px;
+            padding: 28px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .text-center { text-align: center; }
+        h1 { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+        .gradient-text {
+            background: linear-gradient(100deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 24px; line-height: 1.4; }
+        .flex { display: flex; }
+        .gap-3 { gap: 12px; }
+        .gap-2 { gap: 8px; }
+        .gap-4 { gap: 14px; }
+        .justify-center { justify-content: center; }
+        .stat-pill {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 14px 12px;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .stat-num { font-size: 26px; font-weight: 700; color: var(--text); transition: transform 0.2s ease; }
+        .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 2px; }
+        .input-wrapper { display: flex; gap: 12px; margin-top: 24px; }
+        .input-field {
+            flex: 1;
+            padding: 16px 18px;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            background: rgba(255,255,255,0.9);
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(234,88,12,0.15);
+        }
+        .btn-add {
+            padding: 14px 22px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(234,88,12,0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-add:active { transform: scale(0.95); box-shadow: 0 3px 8px rgba(234,88,12,0.35); }
+        
+        /* ========== BOTONES ========== */
+        .botones-fila {
+            display: flex;
+            gap: 14px;
+        }
+        .btn-abrir-ventana {
+            flex: 1;
+            padding: 16px 14px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-abrir-ventana.pendientes {
+            background: linear-gradient(135deg, #fb923c, var(--accent));
+            color: white;
+            box-shadow: 0 6px 16px rgba(234,88,12,0.35);
+        }
+        .btn-abrir-ventana.pendientes:active {
+            background: linear-gradient(135deg, var(--accent-strong), #9a3412);
+            transform: scale(0.96);
+            box-shadow: 0 3px 8px rgba(234,88,12,0.35);
+        }
+        .btn-abrir-ventana.comprados {
+            background: linear-gradient(135deg, #4ade80, var(--accent2));
+            color: white;
+            box-shadow: 0 6px 16px rgba(22,163,74,0.35);
+        }
+        .btn-abrir-ventana.comprados:active {
+            background: linear-gradient(135deg, var(--accent2-strong), #166534);
+            transform: scale(0.96);
+            box-shadow: 0 3px 8px rgba(22,163,74,0.35);
+        }
+
+        /* ========== VENTANA FLOTANTE ========== */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--overlay);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        .overlay.activo {
+            opacity: 1;
+            visibility: visible;
+        }
+        .ventana-flotante {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -45%) scale(0.9);
+            width: 92%;
+            max-width: 460px;
+            max-height: 80vh;
+            background: var(--card-solid);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            z-index: 101;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .ventana-flotante.activo {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        .ventana-header {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .ventana-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-cerrar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(0,0,0,0.05);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .btn-cerrar:active {
+            background: rgba(0,0,0,0.1);
+            transform: scale(0.9);
+        }
+        .ventana-contenido {
+            padding: 16px 22px 22px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        ul { list-style: none; }
+        li {
+            padding: 14px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        li.removing { animation: slideOut 0.3s ease forwards; }
+        @keyframes slideOut {
+            to { opacity: 0; transform: translateX(30px); height: 0; padding: 0; margin: 0; }
+        }
+        li.done { opacity: 0.6; background: rgba(22,163,74,0.06); }
+        li.done .item-text { text-decoration: line-through; color: var(--muted); }
+        .item-text { flex: 1; font-size: 15px; color: var(--text); word-break: break-word; }
+        .item-actions { display: flex; gap: 6px; }
+        .btn-check, .btn-uncheck, .btn-delete {
+            width: 36px; height: 36px; border-radius: 8px; border: none;
+            font-size: 15px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-check { background: #dcfce7; color: var(--accent2); border: 1px solid var(--accent2); }
+        .btn-check:active { background: var(--accent2); color: white; transform: scale(0.9); }
+        .btn-uncheck { background: #ffedd5; color: var(--accent); border: 1px solid var(--accent); }
+        .btn-uncheck:active { background: var(--accent); color: white; transform: scale(0.9); }
+        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .btn-delete:active { background: #dc2626; color: white; transform: scale(0.9); }
+        .empty-state { text-align: center; padding: 30px 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+        .btn-clear {
+            width: 100%; padding: 12px; margin-top: 16px;
+            background: rgba(255,255,255,0.5);
+            color: #dc2626; border: 1px solid rgba(220,38,38,0.25);
+            border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-clear:active { background: #dc2626; color: white; transform: scale(0.98); }
+        .stat-bump { animation: bump 0.2s ease; }
+        @keyframes bump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== PANTALLA DE CARGA ========== -->
+    <div class="pantalla-carga" id="pantallaCarga">
+        <div class="carga-icono">🛒</div>
+        <div class="carga-texto">Mis Compras</div>
+        <div class="carga-barra">
+            <div class="carga-progreso"></div>
+        </div>
+    </div>
+
+    <!-- ========== OVERLAY para ventanas ========== -->
+    <div class="overlay" id="overlay" onclick="cerrarTodasVentanas()"></div>
+
+    <!-- ========== VENTANA FLOTANTE: PENDIENTES ========== -->
+    <div class="ventana-flotante" id="ventanaPendientes">
+        <div class="ventana-header">
+            <div class="ventana-titulo" style="color: var(--accent);">
+                📋 Pendientes <span id="ventanaContadorPendientes">(0)</span>
+            </div>
+            <button class="btn-cerrar" onclick="cerrarVentana('pendientes')">✕</button>
+        </div>
+        <div class="ventana-contenido">
+            <ul id="listaPendientes"></ul>
+        </div>
+    </div>
+
+    <!-- ========== VENTANA FLOTANTE: COMPRADOS ========== -->
+    <div class="ventana-flotante" id="ventanaComprados">
+        <div class="ventana-header">
+            <div class="ventana-titulo" style="color: var(--accent2);">
+                ✓ Comprados <span id="ventanaContadorComprados">(0)</span>
+            </div>
+            <button class="btn-cerrar" onclick="cerrarVentana('comprados')">✕</button>
+        </div>
+        <div class="ventana-contenido">
+            <ul id="listaComprados"></ul>
+            <button onclick="limpiarComprados()" class="btn-clear">🗑️ Limpiar todos los comprados</button>
+        </div>
+    </div>
+
+    <!-- ========== CONTENIDO PRINCIPAL - CENTRADO ========== -->
+    <div class="max-w-lg" id="contenidoPrincipal" style="opacity: 0; transition: opacity 0.6s ease 0.5s;">
+        <div class="glass-card">
+            <div class="text-center">
+                <h1 class="gradient-text">Mis Compras 🛒</h1>
+                <p class="subtitle">Organiza todo lo que necesitas en un solo lugar</p>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="flex gap-3 justify-center">
+                <div class="stat-pill">
+                    <div class="stat-num" id="statTotal">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-num" id="statDone">0</div>
+                    <div class="stat-label">Comprado</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-num" id="statPending">0</div>
+                    <div class="stat-label">Pendiente</div>
+                </div>
+            </div>
+
+            <!-- Entrada -->
+            <div class="input-wrapper">
+                <input type="text" id="nuevoItem" class="input-field" placeholder="Agregar producto..." autocomplete="off">
+                <button onclick="agregar()" class="btn-add">+</button>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="botones-fila">
+            <button class="btn-abrir-ventana pendientes" onclick="abrirVentana('pendientes')">
+                📋 Ver Pendientes
+            </button>
+            <button class="btn-abrir-ventana comprados" onclick="abrirVentana('comprados')">
+                ✓ Ver Comprados
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== OCULTAR PANTALLA DE CARGA ==========
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('pantallaCarga').classList.add('oculta');
+                document.getElementById('contenidoPrincipal').style.opacity = '1';
+                reproducirSonido('bienvenida');
+            }, 2000);
+        });
+
+        // ========== SISTEMA DE SONIDOS - VOLUMEN SUBIDO ==========
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const VOLUMEN = 0.6; // Antes era 0.18, ¡ahora mucho más fuerte!
+
+        function reproducirSonido(tipo) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const tiempo = audioCtx.currentTime;
+
+            switch(tipo) {
+                case 'agregar':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, tiempo);
+                    osc.frequency.exponentialRampToValueAtTime(880, tiempo + 0.15);
+                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
+                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    break;
+                case 'agregarExtra':
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523, tiempo);
+                    osc.frequency.setValueAtTime(659, tiempo + 0.06);
+                    osc.frequency.setValueAtTime(784, tiempo + 0.12);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.8, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
+                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    break;
+                case 'check':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(660, tiempo);
+                    osc.frequency.setValueAtTime(880, tiempo + 0.08);
+                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
+                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    break;
+                case 'uncheck':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, tiempo);
+                    osc.frequency.setValueAtTime(330, tiempo + 0.08);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.8, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
+                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    break;
+                case 'eliminar':
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, tiempo);
+                    osc.frequency.exponentialRampToValueAtTime(110, tiempo + 0.25);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.9, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.28);
+                    osc.start(tiempo); osc.stop(tiempo + 0.28);
+                    break;
+                case 'clear':
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(330, tiempo);
+                    osc.frequency.setValueAtTime(220, tiempo + 0.1);
+                    osc.frequency.setValueAtTime(110, tiempo + 0.2);
+                    osc.frequency.setValueAtTime(55, tiempo + 0.35);
+                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.4);
+                    osc.start(tiempo); osc.stop(tiempo + 0.4);
+                    break;
+                case 'abrir':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, tiempo);
+                    osc.frequency.setValueAtTime(523, tiempo + 0.1);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.7, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
+                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    break;
+                case 'cerrar':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523, tiempo);
+                    osc.frequency.setValueAtTime(392, tiempo + 0.1);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.7, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
+                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    break;
+                case 'tecla':
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(660 + Math.random() * 60, tiempo);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.25, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.06);
+                    osc.start(tiempo); osc.stop(tiempo + 0.06);
+                    break;
+                case 'move':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523, tiempo);
+                    osc.frequency.setValueAtTime(659, tiempo + 0.06);
+                    osc.frequency.setValueAtTime(784, tiempo + 0.12);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.85, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
+                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    break;
+                case 'bienvenida':
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(330, tiempo);
+                    osc.frequency.setValueAtTime(440, tiempo + 0.15);
+                    osc.frequency.setValueAtTime(554, tiempo + 0.3);
+                    osc.frequency.setValueAtTime(660, tiempo + 0.45);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.75, tiempo);
+                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.5);
+                    osc.start(tiempo); osc.stop(tiempo + 0.5);
+                    break;
+            }
+        }
+
+        // ========== VENTANAS FLOTANTES ==========
+        function abrirVentana(nombre) {
+            document.getElementById('overlay').classList.add('activo');
+            document.getElementById(`ventana${capitalize(nombre)}`).classList.add('activo');
+            reproducirSonido('abrir');
+        }
+
+        function cerrarVentana(nombre) {
+            document.getElementById(`ventana${capitalize(nombre)}`).classList.remove('activo');
+            if (!document.querySelector('.ventana-flotante.activo')) {
+                document.getElementById('overlay').classList.remove('activo');
+            }
+            reproducirSonido('cerrar');
+        }
+
+        function cerrarTodasVentanas() {
+            document.querySelectorAll('.ventana-flotante.activo').forEach(v => {
+                v.classList.remove('activo');
+            });
+            document.getElementById('overlay').classList.remove('activo');
+            reproducirSonido('cerrar');
+        }
+
+        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        // ========== DATOS ==========
+        let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
+        const input = document.getElementById('nuevoItem');
+
+        // ========== AGREGAR ITEM ==========
+        function agregar() {
+            const texto = input.value.trim();
+            if (!texto) return;
+            items.push({ texto: texto, hecho: false, id: Date.now() });
+            guardarYRender();
+            input.value = '';
+            reproducirSonido('agregar');
+            setTimeout(() => reproducirSonido('agregarExtra'), 80);
+        }
+
+        input.addEventListener('input', () => reproducirSonido('tecla'));
+        input.addEventListener('keypress', e => {
+            if (e.key === 'Enter') agregar();
+        });
+
+        function marcarHecho(id) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                const estabaHecho = item.hecho;
+                item.hecho = !item.hecho;
+                if (item.hecho && !estabaHecho) {
+                    reproducirSonido('check');
+                    setTimeout(() => reproducirSonido('move'), 100);
+                } else {
+                    reproducirSonido('uncheck');
+                }
+                guardarYRender();
+            }
+        }
+
+        function eliminar(id) {
+            const li = document.querySelector(`li[data-id="${id}"]`);
+            if (li) {
+                li.classList.add('removing');
+                setTimeout(() => {
+                    items = items.filter(i => i.id !== id);
+                    guardarYRender();
+                }, 280);
+            }
+            reproducirSonido('eliminar');
+        }
+
+        function limpiarComprados() {
+            const comprados = items.filter(i => i.hecho).length;
+            if (comprados === 0) return;
+            if (confirm('¿Eliminar todos los productos comprados?')) {
+                items = items.filter(i => !i.hecho);
+                guardarYRender();
+                reproducirSonido('clear');
+            }
+        }
+
+        function guardarYRender() {
+            localStorage.setItem('listaCompras', JSON.stringify(items));
+            renderizar();
+        }
+
+        function actualizarStats() {
+            const elTotal = document.getElementById('statTotal');
+            const elDone = document.getElementById('statDone');
+            const elPending = document.getElementById('statPending');
+            const total = items.length;
+            const hechos = items.filter(i => i.hecho).length;
+            const pendientes = total - hechos;
+            
+            elTotal.textContent = total;
+            elDone.textContent = hechos;
+            elPending.textContent = pendientes;
+            
+            [elTotal, elDone, elPending].forEach(el => {
+                el.classList.add('stat-bump');
+                setTimeout(() => el.classList.remove('stat-bump'), 200);
+            });
+
+            document.getElementById('ventanaContadorPendientes').textContent = `(${pendientes})`;
+            document.getElementById('ventanaContadorComprados').textContent = `(${hechos})`;
+        }
+
+        function renderizar() {
+            const listaPendientes = document.getElementById('listaPendientes');
+            const listaComprados = document.getElementById('listaComprados');
+            listaPendientes.innerHTML = '';
+            listaComprados.innerHTML = '';
+
+            const pendientes = items.filter(i => !i.hecho);
+            const comprados = items.filter(i => i.hecho);
+
+            actualizarStats();
+
+            if (pendientes.length === 0) {
+                listaPendientes.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">¡Agrega tu primer producto!</li>';
+            } else {
+                pendientes.forEach((item, idx) => {
+                    const delay = idx * 50;
+                    const li = document.createElement('li');
+                    li.setAttribute('data-id', item.id);
+                    li.style.animationDelay = `${delay}ms`;
+                    li.innerHTML = `
+                        <span class="item-text">${escapeHtml(item.texto)}</span>
+                        <div class="item-actions">
+                            <button class="btn-check" onclick="marcarHecho(${item.id})">✓</button>
+                            <button class="btn-delete" onclick="eliminar(${item.id})">✕</button>
+                        </div>
+                    `;
+                    listaPendientes.appendChild(li);
+                });
+            }
+
+            if (comprados.length === 0) {
+                listaComprados.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">Aún no has comprado nada</li>';
+            } else {
+                comprados.forEach((item, idx) => {
+                    const delay = idx * 50;
+                    const li = document.createElement('li');
+                    li.className = 'done';
+                    li.setAttribute('data-id', item.id);
+                    li.style.animationDelay = `${delay}ms`;
+                    li.innerHTML = `
+                        <span class="item-text">${escapeHtml(item.texto)}</span>
+                        <div class="item-actions">
+                            <button class="btn-uncheck" onclick="marcarHecho(${item.id})">↩</button>
+                            <button class="btn-delete" onclick="eliminar(${item.id})">✕</button>
+                        </div>
+                    `;
+                    listaComprados.appendChild(li);
+                });
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        renderizar();
+    </script>
+</body>
+</html>
