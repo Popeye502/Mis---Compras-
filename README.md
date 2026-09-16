@@ -79,7 +79,7 @@ mis-compras/
 
 ## 🌐 URL de la app
 
-> 🔗 https://popeye502.github.io/Mis---Compras-/
+> 🔗 https://salguerogt.github.io/Mis---Compras-/
 
 ---
 
