@@ -79,9 +79,7 @@ mis-compras/
 
 ## 🌐 URL de la app
 
-> 🔗 **https://tu-usuario.github.io/mis-compras/**
-
-*(Cambia `tu-usuario` por tu nombre de usuario de GitHub)*
+> 🔗 **https://tu.github.io/mis-compras/**
 
 ---
 
