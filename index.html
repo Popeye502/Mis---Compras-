@@ -9,6 +9,11 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff6b1a'/%3E%3Cstop offset='1' stop-color='%2322c55e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='%231a0f05'/%3E%3Cpath d='M30 38h6l6 22h34l5-18H42' fill='none' stroke='url(%23g)' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='46' cy='72' r='6' fill='%23ff6b1a'/%3E%3Ccircle cx='72' cy='72' r='6' fill='%2322c55e'/%3E%3C/svg%3E">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mis Compras">
+    <link rel="apple-touch-icon" href="./icon.png">
     <title>Mis Compras</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -35,6 +40,7 @@
         }
         * { font-family: 'Quicksand', sans-serif; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
         html { height: 100%; font-size: 16px; }
+        html { height: 100%; min-height: 100%; }
         body {
             font-size: 16px;
             font-weight: 600;
@@ -47,15 +53,20 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100dvh;
+            background-color: #1a0f05;
+            min-height: 100vh;
             min-height: -webkit-fill-available;
+            min-height: 100dvh;
+            height: auto;
             padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text);
             overflow-x: hidden;
+            overflow-y: auto;
             touch-action: manipulation;
+            -webkit-overflow-scrolling: touch;
         }
         button { -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
         input { user-select: text; }
@@ -879,6 +890,25 @@
                         o.frequency.setValueAtTime(784,x+0.16); o.frequency.setValueAtTime(1047,x+0.24);
                         g.gain.setValueAtTime(VOL*0.7,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.4);
                         o.start(x); o.stop(x+0.4); break;
+                    case 'tecla':
+                        o.type='square';
+                        o.frequency.setValueAtTime(800 + Math.random()*200,x);
+                        g.gain.setValueAtTime(VOL*0.08,x);
+                        g.gain.exponentialRampToValueAtTime(0.001,x+0.04);
+                        o.start(x); o.stop(x+0.04); break;
+                    case 'espacio':
+                        o.type='triangle';
+                        o.frequency.setValueAtTime(300,x);
+                        g.gain.setValueAtTime(VOL*0.12,x);
+                        g.gain.exponentialRampToValueAtTime(0.001,x+0.08);
+                        o.start(x); o.stop(x+0.08); break;
+                    case 'borrar':
+                        o.type='sawtooth';
+                        o.frequency.setValueAtTime(400,x);
+                        o.frequency.exponentialRampToValueAtTime(200,x+0.06);
+                        g.gain.setValueAtTime(VOL*0.1,x);
+                        g.gain.exponentialRampToValueAtTime(0.001,x+0.06);
+                        o.start(x); o.stop(x+0.06); break;
                 }
             } catch(e) {}
         }
@@ -1004,8 +1034,12 @@
             el.confirmOverlay.classList.remove('activo');
             confirmCallback = null;
         }
-        el.confirmCancel.addEventListener('click', cerrarConfirm);
+        el.confirmCancel.addEventListener('click', function() {
+            sonido('cerrar');
+            cerrarConfirm();
+        });
         el.confirmOk.addEventListener('click', function() {
+            sonido('check');
             var cb = confirmCallback;
             cerrarConfirm();
             if (cb) cb();
@@ -1078,6 +1112,43 @@
 
         el.btnAdd.addEventListener('click', agregar);
         el.nuevoItem.addEventListener('keypress', function(e) { if (e.key === 'Enter') agregar(); });
+        
+        // Sonidos de teclado al escribir
+        var ultimaTeclaSonido = 0;
+        var valorAnterior = el.nuevoItem.value;
+        el.nuevoItem.addEventListener('input', function(e) {
+            var ahora = Date.now();
+            var valorActual = el.nuevoItem.value;
+            
+            // Limitar sonidos: máximo uno cada 35ms para evitar sobrecarga
+            if (ahora - ultimaTeclaSonido < 35) return;
+            ultimaTeclaSonido = ahora;
+            
+            // Detectar si se borró o se escribió
+            if (valorActual.length < valorAnterior.length) {
+                sonido('borrar');
+            } else if (valorActual.length > valorAnterior.length) {
+                var ultimoChar = valorActual[valorActual.length - 1];
+                if (ultimoChar === ' ') {
+                    sonido('espacio');
+                } else {
+                    sonido('tecla');
+                }
+            }
+            valorAnterior = valorActual;
+        });
+        
+        // También sonar al presionar teclas especiales
+        el.nuevoItem.addEventListener('keydown', function(e) {
+            var ahora = Date.now();
+            if (ahora - ultimaTeclaSonido < 35) return;
+            
+            if (e.key === 'Backspace' || e.key === 'Delete') {
+                ultimaTeclaSonido = ahora;
+                sonido('borrar');
+            }
+        });
+        
         el.btnLimpiar.addEventListener('click', limpiarComprados);
 
         // Event delegation en listas
@@ -1215,6 +1286,8 @@
         });
 
         el.btnInstalar.addEventListener('click', async function() {
+            sonido('agregar');
+            vibrar(15);
             if (defPrompt) {
                 try {
                     defPrompt.prompt();
@@ -1227,7 +1300,10 @@
             }
         });
 
-        el.installClose.addEventListener('click', cerrarInstall);
+        el.installClose.addEventListener('click', function() {
+            sonido('cerrar');
+            cerrarInstall();
+        });
 
         function cerrarInstall() {
             el.installPrompt.classList.remove('mostrar');
@@ -1307,6 +1383,17 @@
                     el.installPrompt.classList.add('mostrar');
                 }
             }, 700);
+        }
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js').then(function(registration) {
+                    console.log('ServiceWorker registrado correctamente:', registration.scope);
+                }).catch(function(error) {
+                    console.log('Error al registrar ServiceWorker:', error);
+                });
+            });
         }
 
         // Iniciar cuando el DOM esté listo
