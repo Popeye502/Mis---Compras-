@@ -2,800 +2,1321 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ea580c">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a0f05">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="icon.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff6b1a'/%3E%3Cstop offset='1' stop-color='%2322c55e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='%231a0f05'/%3E%3Cpath d='M30 38h6l6 22h34l5-18H42' fill='none' stroke='url(%23g)' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='46' cy='72' r='6' fill='%23ff6b1a'/%3E%3Ccircle cx='72' cy='72' r='6' fill='%2322c55e'/%3E%3C/svg%3E">
     <title>Mis Compras</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(function() { console.log('Service Worker registrado'); })
-                    .catch(function(err) { console.log('SW error:', err); });
-            });
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --card: rgba(255,255,255,0.92);
-            --card-solid: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
-            --accent: #ea580c;
-            --accent-strong: #c2410c;
-            --accent2: #16a34a;
-            --accent2-strong: #15803d;
-            --border: rgba(15,23,42,0.1);
-            --overlay: rgba(0,0,0,0.4);
+            --super-naranja: #ff6b1a;
+            --super-naranja-osc: #cc4a00;
+            --super-naranja-soft: rgba(255, 107, 26, 0.14);
+            --super-verde: #22c55e;
+            --super-verde-osc: #15803d;
+            --super-verde-soft: rgba(34, 197, 94, 0.14);
+            --super-amarillo: #fbbf24;
+            --super-rojo: #ef4444;
+            --super-rojo-soft: rgba(239, 68, 68, 0.1);
+            --bg-card: rgba(25, 15, 5, 0.72);
+            --bg-card-solid: #1a0f08;
+            --bg-card-solid-2: #24160a;
+            --text: #ffffff;
+            --muted: #c9b89a;
+            --overlay: rgba(10, 5, 0, 0.78);
+            --border: rgba(255, 107, 26, 0.18);
+            --border-light: rgba(255, 255, 255, 0.08);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
-        * { font-family: 'Quicksand', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
+        * { font-family: 'Quicksand', sans-serif; margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+        html { height: 100%; font-size: 16px; }
         body {
-            background-image: linear-gradient(135deg, rgba(15,23,42,0.55), rgba(22,163,74,0.35)),
-            url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/67eb7796b4414f36b924c8a39fce6080.jpeg~tplv-0es2k971ck-image.image?rcl=202609170313438F2D46A90BE1455AE9E5&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792178080&x-signature=fEg%2BUvXaPzfXMYuCd0AoOCUQ%2Bks%3D');
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(255, 107, 26, 0.18), transparent 55%),
+                radial-gradient(ellipse at 80% 100%, rgba(34, 197, 94, 0.15), transparent 55%),
+                linear-gradient(135deg, rgba(20, 10, 0, 0.82), rgba(5, 15, 5, 0.88)),
+                url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/67eb7796b4414f36b924c8a39fce6080.jpeg~tplv-0es2k971ck-image.image?rcl=202609170313438F2D46A90BE1455AE9E5&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792178080&x-signature=fEg%2BUvXaPzfXMYuCd0AoOCUQ%2Bks%3D');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100vh;
-            padding: 20px 16px;
+            min-height: 100dvh;
+            min-height: -webkit-fill-available;
+            padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--text);
+            overflow-x: hidden;
+            touch-action: manipulation;
         }
+        button { -webkit-touch-callout: none; user-select: none; touch-action: manipulation; }
+        input { user-select: text; }
+
+        /* SVG ICONS BASE */
+        .icon { width: 20px; height: 20px; display: inline-block; vertical-align: middle; stroke-width: 2; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-lg { width: 24px; height: 24px; }
+        .icon-xl { width: 32px; height: 32px; }
 
         /* PANTALLA DE CARGA */
         .pantalla-carga {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 30%, rgba(255,107,26,0.22), transparent 50%),
+                radial-gradient(ellipse at 70% 70%, rgba(34,197,94,0.18), transparent 50%),
+                linear-gradient(135deg, #1a0a00 0%, #0a1a0a 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden; padding: var(--safe-top) 0 var(--safe-bottom);
         }
-        .pantalla-carga.oculta { opacity: 0; visibility: hidden; }
+        .pantalla-carga.oculta { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        .carga-hero {
+            position: relative; width: 140px; height: 140px;
+            margin-bottom: 22px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .carga-hero::before {
+            content: ''; position: absolute; inset: -8px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, 
+                transparent, var(--super-naranja), 
+                var(--super-amarillo), var(--super-verde), transparent);
+            animation: girar 2s linear infinite;
+            filter: blur(6px); opacity: 0.7;
+        }
+        .carga-hero::after {
+            content: ''; position: absolute; inset: 0;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--super-naranja);
+            border-right-color: var(--super-amarillo);
+            border-bottom-color: var(--super-verde);
+            animation: girar 1.2s linear infinite reverse;
+        }
+        @keyframes girar { to { transform: rotate(360deg); } }
+        
         .carga-icono {
-            font-size: 60px;
-            animation: bounce 1s ease infinite alternate;
-            margin-bottom: 20px;
+            z-index: 1; color: var(--super-naranja);
+            animation: pulso 1s ease-in-out infinite;
+            filter: drop-shadow(0 0 12px var(--super-naranja));
         }
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-15px); }
+        .carga-icono svg { width: 56px; height: 56px; stroke-width: 1.8; }
+        @keyframes pulso {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
         }
+        
         .carga-texto {
-            color: white;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 25px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 32px; font-weight: 700;
+            background: linear-gradient(90deg, 
+                var(--super-naranja), var(--super-amarillo), 
+                var(--super-verde), var(--super-naranja));
+            background-size: 300% auto;
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            -webkit-text-fill-color: transparent;
+            animation: arcoiris 2.5s linear infinite;
+            margin-bottom: 18px; letter-spacing: 3px;
         }
+        @keyframes arcoiris { to { background-position: 300% center; } }
+        
+        .carga-sub {
+            color: var(--muted); font-size: 12px; margin-bottom: 16px;
+            letter-spacing: 4px; text-transform: uppercase; font-weight: 600;
+        }
+        
         .carga-barra {
-            width: 200px; height: 6px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
-            overflow: hidden;
+            width: 200px; height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px; overflow: hidden;
+            border: 1px solid rgba(255,107,26,0.2);
         }
         .carga-progreso {
-            height: 100%;
-            background: white;
-            border-radius: 3px;
-            width: 0%;
-            animation: cargar 1.8s ease forwards;
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, var(--super-naranja), var(--super-amarillo), var(--super-verde));
+            border-radius: 10px;
+            box-shadow: 0 0 12px var(--super-naranja);
         }
-        @keyframes cargar {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
+        .carga-progreso.lenta { animation: cargarLenta 2s ease forwards; }
+        .carga-progreso.rapida { animation: cargarRapida 0.45s ease forwards; }
+        @keyframes cargarLenta { to { width: 100%; } }
+        @keyframes cargarRapida { to { width: 100%; } }
 
-        /* NOTIFICACIÓN DE INSTALACIÓN */
+        /* BOTÓN COMENZAR */
+        .carga-btn {
+            margin-top: 22px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--super-naranja), var(--super-naranja-osc));
+            color: white; border: none; border-radius: 50px;
+            font-family: 'Quicksand', sans-serif; font-size: 16px; font-weight: 700;
+            letter-spacing: 1.5px; cursor: pointer;
+            box-shadow: 0 0 24px rgba(255,107,26,0.6), 0 4px 16px rgba(0,0,0,0.3);
+            opacity: 0; transform: translateY(15px) scale(0.9);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            display: inline-flex; align-items: center; gap: 10px;
+            min-height: 50px;
+        }
+        .carga-btn.visible {
+            opacity: 1; transform: translateY(0) scale(1);
+            pointer-events: auto;
+            animation: botonRespirar 2s ease-in-out infinite;
+        }
+        .carga-btn:active { transform: scale(0.94); box-shadow: 0 0 36px rgba(255,107,26,0.9); }
+        .carga-btn svg { width: 20px; height: 20px; }
+        @keyframes botonRespirar {
+            0%, 100% { box-shadow: 0 0 24px rgba(255,107,26,0.6), 0 4px 16px rgba(0,0,0,0.3); }
+            50% { box-shadow: 0 0 38px rgba(255,107,26,0.85), 0 4px 20px rgba(0,0,0,0.35); }
+        }
+        .pantalla-carga.lista-para-empezar { cursor: pointer; }
+
+        /* NOTIFICACIÓN INSTALAR */
         .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(120px);
-            width: 92%;
-            max-width: 460px;
-            background: var(--card-solid);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 16px 40px 16px 18px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 9998;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: fixed; bottom: calc(20px + var(--safe-bottom)); left: 50%;
+            transform: translateX(-50%) translateY(140px);
+            width: 92%; max-width: 440px;
+            background: var(--bg-card-solid);
+            border: 1px solid var(--super-naranja);
+            border-radius: 16px; padding: 14px 40px 14px 16px;
+            box-shadow: 0 0 24px rgba(255,107,26,0.35), 0 12px 32px rgba(0,0,0,0.5);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            z-index: 9998; display: flex; align-items: center; gap: 10px;
+            opacity: 0; visibility: hidden; transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .install-prompt.mostrar {
-            opacity: 1;
-            visibility: visible;
+            opacity: 1; visibility: visible;
             transform: translateX(-50%) translateY(0);
         }
-        .install-icon { font-size: 30px; }
+        .install-icon { color: var(--super-naranja); display: flex; }
         .install-text { flex: 1; }
-        .install-text strong {
-            display: block;
-            color: var(--text);
-            font-size: 15px;
-            font-weight: 700;
-        }
-        .install-text small {
-            color: var(--muted);
-            font-size: 13px;
-        }
+        .install-text strong { display: block; color: white; font-size: 15px; font-weight: 700; letter-spacing: 0.01em; }
+        .install-text small { color: var(--muted); font-size: 12px; font-weight: 500; }
         .install-btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(234,88,12,0.35);
-            transition: all 0.2s ease;
-            white-space: nowrap;
+            background: linear-gradient(135deg, var(--super-naranja), var(--super-naranja-osc));
+            color: white; border: none; border-radius: 10px;
+            padding: 10px 18px; font-size: 14px; font-weight: 700;
+            cursor: pointer; box-shadow: 0 0 14px rgba(255,107,26,0.5);
+            min-height: 40px; letter-spacing: 0.02em;
         }
         .install-btn:active { transform: scale(0.95); }
         .install-close {
-            position: absolute;
-            top: 6px;
-            right: 8px;
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: var(--muted);
-            cursor: pointer;
-            padding: 6px;
-            line-height: 1;
+            position: absolute; top: 4px; right: 6px; background: none; border: none;
+            color: var(--muted); cursor: pointer; padding: 8px; display: flex;
+            min-width: 36px; min-height: 36px; align-items: center; justify-content: center;
         }
 
-        /* CONTENEDOR PRINCIPAL */
-        .max-w-lg { 
-            width: 100%;
-            max-width: 460px;
-            margin: 0 auto;
-        }
+        /* CONTENEDOR */
+        .max-w-lg { width: 100%; max-width: 440px; margin: 0 auto; }
         .glass-card {
-            background: var(--card);
+            background: var(--bg-card);
+            -webkit-backdrop-filter: blur(20px);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.5);
-            border-radius: 24px;
-            padding: 28px 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            border: 1px solid var(--border);
+            border-radius: 24px; padding: 28px 22px; margin-bottom: 18px;
+            box-shadow: 
+                0 0 30px rgba(255,107,26,0.12), 
+                0 20px 48px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+        }
+        .glass-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--super-naranja), var(--super-verde), transparent);
+            opacity: 0.6;
         }
         .text-center { text-align: center; }
-        h1 { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
-        .gradient-text {
-            background: linear-gradient(100deg, var(--accent), var(--accent2));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        h1 {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 38px; font-weight: 700; margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #ffe8d0 40%, var(--super-amarillo) 70%, var(--super-naranja) 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 0 var(--super-naranja-osc)) drop-shadow(0 0 14px rgba(255,107,26,0.45));
+            letter-spacing: 2px; display: inline-flex; align-items: center; gap: 12px;
+            line-height: 1.1;
         }
-        .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 24px; line-height: 1.4; }
-        .flex { display: flex; }
-        .gap-3 { gap: 12px; }
-        .justify-center { justify-content: center; }
+        h1 .title-icon {
+            color: var(--super-verde);
+            filter: drop-shadow(0 0 10px rgba(34,197,94,0.7));
+            animation: carrito 2s ease-in-out infinite;
+        }
+        h1 .title-icon svg { width: 34px; height: 34px; stroke-width: 2; }
+        @keyframes carrito {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-4px) rotate(-4deg); }
+            75% { transform: translateX(4px) rotate(4deg); }
+        }
+        .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 24px; font-weight: 500; letter-spacing: 0.01em; }
+        .subtitle span { color: var(--super-amarillo); font-weight: 700; }
+
+        /* PROGRESO CIRCULAR + STATS */
+        .progreso-wrap {
+            display: flex; align-items: center; justify-content: center; gap: 18px;
+            margin-bottom: 8px;
+        }
+        .anillo-progreso {
+            position: relative; width: 96px; height: 96px; flex-shrink: 0;
+        }
+        .anillo-progreso svg { width: 96px; height: 96px; transform: rotate(-90deg); }
+        .anillo-bg { fill: none; stroke: rgba(255,255,255,0.06); stroke-width: 7; }
+        .anillo-fill {
+            fill: none; stroke-width: 7; stroke-linecap: round;
+            stroke: url(#gradiente-anillo);
+            stroke-dasharray: 264; stroke-dashoffset: 264;
+            transition: stroke-dashoffset 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 0 4px rgba(255,107,26,0.5));
+        }
+        .anillo-texto {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .anillo-pct {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 24px; font-weight: 700; color: white; line-height: 1;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+        }
+        .anillo-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; margin-top: 3px; }
+
+        .stats-col { display: flex; flex-direction: column; gap: 10px; flex: 1; }
         .stat-pill {
-            background: rgba(255,255,255,0.8);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 14px 12px;
-            text-align: center;
-            flex: 1;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-        .stat-num { font-size: 26px; font-weight: 700; color: var(--text); transition: transform 0.2s ease; }
-        .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 2px; }
-        .stat-pill.done .stat-num { color: var(--accent2); }
-        .stat-pill.pending .stat-num { color: var(--accent); }
-        .input-wrapper { display: flex; gap: 12px; margin-top: 24px; }
-        .input-field {
-            flex: 1;
-            padding: 16px 18px;
-            border-radius: 14px;
-            border: 2px solid transparent;
-            background: rgba(255,255,255,0.9);
-            font-size: 16px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-light);
+            border-radius: 14px; padding: 10px 14px;
+            display: flex; align-items: center; gap: 10px;
             transition: all 0.2s ease;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
         }
+        .stat-pill.done { border-color: rgba(34,197,94,0.3); background: var(--super-verde-soft); }
+        .stat-pill.pending { border-color: rgba(255,107,26,0.3); background: var(--super-naranja-soft); }
+        .stat-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .stat-pill.done .stat-icon { background: rgba(34,197,94,0.2); color: var(--super-verde); }
+        .stat-pill.pending .stat-icon { background: rgba(255,107,26,0.2); color: var(--super-naranja); }
+        .stat-info { flex: 1; min-width: 0; }
+        .stat-num {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 26px; font-weight: 700; line-height: 1;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
+        }
+        .stat-pill.done .stat-num { color: var(--super-verde); text-shadow: 0 0 10px rgba(34,197,94,0.45); }
+        .stat-pill.pending .stat-num { color: var(--super-naranja); text-shadow: 0 0 10px rgba(255,107,26,0.45); }
+        .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-top: 3px; }
+        .stat-bump { animation: bump 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes bump { 0% { transform: scale(1); } 50% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+        /* INPUT */
+        .input-wrapper { display: flex; gap: 10px; margin-top: 22px; }
+        .input-field {
+            flex: 1; padding: 15px 16px; border-radius: 14px;
+            border: 2px solid rgba(255,107,26,0.18);
+            background: rgba(255,255,255,0.06); color: white; font-size: 16px; font-weight: 500;
+            transition: all 0.2s ease; min-height: 52px;
+            letter-spacing: 0.01em;
+        }
+        .input-field::placeholder { color: rgba(201,184,154,0.45); font-weight: 500; }
         .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(234,88,12,0.15);
+            outline: none; border-color: var(--super-naranja);
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 0 3px rgba(255,107,26,0.15), 0 0 18px rgba(255,107,26,0.25);
         }
         .btn-add {
-            padding: 14px 22px;
-            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-size: 20px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 6px 16px rgba(234,88,12,0.35);
-            transition: all 0.2s ease;
+            padding: 0 20px; min-width: 54px; min-height: 50px;
+            background: linear-gradient(135deg, var(--super-naranja), var(--super-naranja-osc));
+            color: white; border: none; border-radius: 14px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(255,107,26,0.5);
+            transition: all 0.15s ease;
         }
-        .btn-add:active { transform: scale(0.95); box-shadow: 0 3px 8px rgba(234,88,12,0.35); }
-        
-        /* BOTONES PRINCIPALES */
-        .botones-fila {
-            display: flex;
-            gap: 14px;
-        }
-        .btn-abrir-ventana {
-            flex: 1;
-            padding: 16px 14px;
-            border: none;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-abrir-ventana.pendientes {
-            background: linear-gradient(135deg, #fb923c, var(--accent));
-            color: white;
-            box-shadow: 0 6px 16px rgba(234,88,12,0.35);
-        }
-        .btn-abrir-ventana.pendientes:active {
-            background: linear-gradient(135deg, var(--accent-strong), #9a3412);
-            transform: scale(0.96);
-        }
-        .btn-abrir-ventana.comprados {
-            background: linear-gradient(135deg, #4ade80, var(--accent2));
-            color: white;
-            box-shadow: 0 6px 16px rgba(22,163,74,0.35);
-        }
-        .btn-abrir-ventana.comprados:active {
-            background: linear-gradient(135deg, var(--accent2-strong), #166534);
-            transform: scale(0.96);
-        }
+        .btn-add:active { transform: scale(0.94); box-shadow: 0 0 30px rgba(255,107,26,0.85); }
+        .btn-add svg { width: 24px; height: 24px; stroke-width: 2.5; }
 
-        /* VENTANA FLOTANTE */
+        /* BOTONES PRINCIPALES */
+        .botones-fila { display: flex; gap: 12px; }
+        .btn-abrir {
+            flex: 1; padding: 16px 12px; border: none; border-radius: 16px;
+            font-size: 15px; font-weight: 700; cursor: pointer;
+            transition: all 0.15s ease; display: flex;
+            align-items: center; justify-content: center; gap: 8px; color: white;
+            min-height: 56px; letter-spacing: 0.03em;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .btn-abrir svg { width: 18px; height: 18px; }
+        .btn-abrir.pendientes {
+            background: linear-gradient(135deg, #ff8c3a, var(--super-naranja));
+            box-shadow: 0 0 22px rgba(255,107,26,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,107,26,0.5);
+        }
+        .btn-abrir.pendientes:active { transform: scale(0.96); box-shadow: 0 0 32px rgba(255,107,26,0.85); }
+        .btn-abrir.comprados {
+            background: linear-gradient(135deg, #4ade80, var(--super-verde));
+            color: #052e16;
+            box-shadow: 0 0 22px rgba(34,197,94,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+            border: 1px solid rgba(34,197,94,0.5);
+        }
+        .btn-abrir.comprados:active { transform: scale(0.96); box-shadow: 0 0 32px rgba(34,197,94,0.85); }
+
+        /* VENTANAS */
         .overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--overlay);
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay); z-index: 100; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
-            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
         }
         .overlay.activo { opacity: 1; visibility: visible; }
-        .ventana-flotante {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -45%) scale(0.9);
-            width: 92%;
-            max-width: 460px;
-            max-height: 80vh;
-            background: var(--card-solid);
-            border-radius: 24px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-            z-index: 101;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+        .ventana {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -45%) scale(0.92);
+            width: 92%; max-width: 440px; max-height: 82dvh;
+            background: var(--bg-card-solid); border-radius: 22px;
+            z-index: 101; opacity: 0; visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); overflow: hidden;
+            display: flex; flex-direction: column;
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
         }
-        .ventana-flotante.activo {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -50%) scale(1);
+        .ventana.activo { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .ventana.pendientes {
+            border: 1px solid rgba(255,107,26,0.4);
+            box-shadow: 0 0 40px rgba(255,107,26,0.4), 0 24px 60px rgba(0,0,0,0.6);
+        }
+        .ventana.comprados {
+            border: 1px solid rgba(34,197,94,0.4);
+            box-shadow: 0 0 40px rgba(34,197,94,0.4), 0 24px 60px rgba(0,0,0,0.6);
         }
         .ventana-header {
-            padding: 18px 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border);
+            padding: 16px 18px; display: flex; align-items: center;
+            justify-content: space-between; border-bottom: 1px solid var(--border-light);
+            flex-shrink: 0;
         }
+        .ventana.pendientes .ventana-header { background: linear-gradient(135deg, rgba(255,107,26,0.12), transparent); }
+        .ventana.comprados .ventana-header { background: linear-gradient(135deg, rgba(34,197,94,0.12), transparent); }
         .ventana-titulo {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px;
+            letter-spacing: 0.02em;
         }
-        .ventana-contador {
-            background: rgba(0,0,0,0.08);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 700;
+        .ventana-titulo .tit-icon { display: flex; }
+        .ventana.pendientes .ventana-titulo { color: var(--super-naranja); text-shadow: 0 0 10px rgba(255,107,26,0.45); }
+        .ventana.comprados .ventana-titulo { color: var(--super-verde); text-shadow: 0 0 10px rgba(34,197,94,0.45); }
+        .ventana-contador { padding: 5px 13px; border-radius: 20px; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+        .ventana.pendientes .ventana-contador {
+            background: var(--super-naranja-soft); color: var(--super-naranja);
+            border: 1px solid rgba(255,107,26,0.35);
+        }
+        .ventana.comprados .ventana-contador {
+            background: var(--super-verde-soft); color: var(--super-verde);
+            border: 1px solid rgba(34,197,94,0.35);
         }
         .btn-cerrar {
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0,0,0,0.05);
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.06); color: var(--muted);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s ease; flex-shrink: 0;
         }
-        .btn-cerrar:active { background: rgba(0,0,0,0.1); transform: scale(0.9); }
-        .ventana-contenido {
-            padding: 16px 22px 22px;
-            overflow-y: auto;
-            flex: 1;
-        }
+        .btn-cerrar:active { background: rgba(255,107,26,0.2); color: white; transform: scale(0.9); border-color: var(--super-naranja); }
+        .btn-cerrar svg { width: 18px; height: 18px; }
+        .ventana-body { padding: 14px 16px 16px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+        .ventana-body::-webkit-scrollbar { width: 4px; }
+        .ventana-body::-webkit-scrollbar-thumb { background: rgba(255,107,26,0.3); border-radius: 4px; }
+
+        /* ITEMS */
         ul { list-style: none; }
         li {
-            padding: 14px;
-            background: rgba(255,255,255,0.7);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            animation: slideIn 0.3s ease forwards;
-            opacity: 0;
-            transform: translateY(8px);
+            padding: 12px 12px 12px 14px; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-light);
+            border-left: 3px solid var(--super-amarillo);
+            border-radius: 12px; margin-bottom: 8px;
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            animation: entrada 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0; transform: translateY(10px) scale(0.98);
+            transition: background 0.15s ease, border-color 0.15s ease;
         }
-        @keyframes slideIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        li.removing { animation: slideOut 0.3s ease forwards; }
-        @keyframes slideOut {
-            to { opacity: 0; transform: translateX(30px); height: 0; padding: 0; margin: 0; }
-        }
-        li.done { opacity: 0.6; background: rgba(22,163,74,0.06); }
+        @keyframes entrada { to { opacity: 1; transform: translateY(0) scale(1); } }
+        li:hover, li:active { border-left-color: var(--super-naranja); background: var(--super-naranja-soft); }
+        li.removing { animation: salida 0.28s ease forwards; }
+        @keyframes salida { to { opacity: 0; transform: translateX(40px); height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: 0; border: 0; } }
+        li.done { opacity: 0.6; background: var(--super-verde-soft); border-color: rgba(34,197,94,0.2); border-left-color: var(--super-verde); }
         li.done .item-text { text-decoration: line-through; color: var(--muted); }
-        .item-text { flex: 1; font-size: 15px; color: var(--text); word-break: break-word; }
-        .item-actions { display: flex; gap: 6px; }
-        .btn-check, .btn-uncheck, .btn-delete {
-            width: 36px; height: 36px; border-radius: 8px; border: none;
-            font-size: 15px; cursor: pointer; transition: all 0.2s ease;
+        .item-text { flex: 1; font-size: 16px; color: white; word-break: break-word; font-weight: 600; line-height: 1.4; letter-spacing: 0.01em; }
+        .item-acciones { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-check, .btn-uncheck, .btn-del {
+            width: 40px; height: 40px; border-radius: 10px; border: none;
+            cursor: pointer; transition: all 0.12s ease; display: flex;
+            align-items: center; justify-content: center;
         }
-        .btn-check { background: #dcfce7; color: var(--accent2); border: 1px solid var(--accent2); }
-        .btn-check:active { background: var(--accent2); color: white; transform: scale(0.9); }
-        .btn-uncheck { background: #ffedd5; color: var(--accent); border: 1px solid var(--accent); }
-        .btn-uncheck:active { background: var(--accent); color: white; transform: scale(0.9); }
-        .btn-delete { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
-        .btn-delete:active { background: #dc2626; color: white; transform: scale(0.9); }
-        .empty-state { text-align: center; padding: 30px 10px; color: var(--muted); font-style: italic; font-size: 14px; }
+        .btn-check { background: var(--super-verde-soft); color: var(--super-verde); border: 1px solid rgba(34,197,94,0.4); }
+        .btn-check:active { background: var(--super-verde); color: white; transform: scale(0.88); box-shadow: 0 0 14px var(--super-verde); }
+        .btn-uncheck { background: var(--super-naranja-soft); color: var(--super-naranja); border: 1px solid rgba(255,107,26,0.4); }
+        .btn-uncheck:active { background: var(--super-naranja); color: white; transform: scale(0.88); box-shadow: 0 0 14px var(--super-naranja); }
+        .btn-del { background: var(--super-rojo-soft); color: #ff8a8a; border: 1px solid rgba(239,68,68,0.35); }
+        .btn-del:active { background: var(--super-rojo); color: white; transform: scale(0.88); box-shadow: 0 0 14px var(--super-rojo); }
+        .btn-check svg, .btn-uncheck svg, .btn-del svg { width: 18px; height: 18px; }
+        .empty-state {
+            text-align: center; padding: 40px 16px; color: var(--muted);
+            font-size: 15px; font-weight: 600; display: flex; flex-direction: column;
+            align-items: center; gap: 14px; letter-spacing: 0.01em;
+        }
+        .empty-state .empty-icon { color: rgba(201,184,154,0.25); }
+        .empty-state .empty-icon svg { width: 52px; height: 52px; stroke-width: 1.5; }
         .btn-clear {
-            width: 100%; padding: 12px; margin-top: 16px;
-            background: rgba(255,255,255,0.5);
-            color: #dc2626; border: 1px solid rgba(220,38,38,0.25);
-            border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer;
-            transition: all 0.2s ease;
+            width: 100%; padding: 13px; margin-top: 12px;
+            background: var(--super-rojo-soft); color: #ff9090;
+            border: 1px solid rgba(239,68,68,0.35); border-radius: 12px;
+            font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            min-height: 46px; letter-spacing: 0.02em;
         }
-        .btn-clear:active { background: #dc2626; color: white; transform: scale(0.98); }
-        .stat-bump { animation: bump 0.2s ease; }
-        @keyframes bump {
+        .btn-clear:active { background: var(--super-rojo); color: white; transform: scale(0.98); box-shadow: 0 0 16px rgba(239,68,68,0.5); }
+        .btn-clear svg { width: 16px; height: 16px; }
+
+        /* DIÁLOGO CONFIRMACIÓN */
+        .confirm-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: all 0.2s ease;
+            padding: 20px; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+        }
+        .confirm-overlay.activo { opacity: 1; visibility: visible; }
+        .confirm-box {
+            background: var(--bg-card-solid-2); border: 1px solid rgba(255,107,26,0.3);
+            border-radius: 20px; padding: 24px; width: 100%; max-width: 320px;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            transform: scale(0.9); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .confirm-overlay.activo .confirm-box { transform: scale(1); }
+        .confirm-icon {
+            width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px;
+            background: var(--super-rojo-soft); display: flex; align-items: center;
+            justify-content: center; color: var(--super-rojo);
+        }
+        .confirm-icon svg { width: 28px; height: 28px; }
+        .confirm-titulo { font-family: 'Quicksand', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.01em; }
+        .confirm-msg { color: var(--muted); font-size: 15px; margin-bottom: 22px; line-height: 1.45; font-weight: 500; }
+        .confirm-btns { display: flex; gap: 10px; }
+        .confirm-btn {
+            flex: 1; padding: 13px; border-radius: 12px; border: none;
+            font-size: 15px; font-weight: 700; cursor: pointer; min-height: 46px;
+            transition: all 0.12s ease; letter-spacing: 0.02em;
+        }
+        .confirm-btn.cancel { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border-light); }
+        .confirm-btn.cancel:active { background: rgba(255,255,255,0.12); transform: scale(0.96); }
+        .confirm-btn.danger { background: linear-gradient(135deg, var(--super-rojo), #c02626); color: white; box-shadow: 0 0 14px rgba(239,68,68,0.4); }
+        .confirm-btn.danger:active { transform: scale(0.96); box-shadow: 0 0 22px rgba(239,68,68,0.7); }
+
+        /* TOAST */
+        .toast {
+            position: fixed; top: calc(20px + var(--safe-top)); left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--bg-card-solid-2); border: 1px solid var(--super-verde);
+            color: white; padding: 13px 22px; border-radius: 14px;
+            font-size: 15px; font-weight: 600; z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 18px rgba(34,197,94,0.3);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0; display: flex; align-items: center; gap: 10px;
+            letter-spacing: 0.01em;
+        }
+        .toast.mostrar { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast svg { width: 18px; height: 18px; color: var(--super-verde); flex-shrink: 0; }
+
+        /* CÉLEBRACIÓN */
+        .celebrar { animation: celebrar 0.6s ease; }
+        @keyframes celebrar {
             0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+            25% { transform: scale(1.06) rotate(-1deg); }
+            50% { transform: scale(1.08) rotate(1deg); }
+            75% { transform: scale(1.04) rotate(-0.5deg); }
             100% { transform: scale(1); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 360px) {
+            html { font-size: 15px; }
+            h1 { font-size: 32px; letter-spacing: 1.5px; }
+            h1 .title-icon svg { width: 28px; height: 28px; }
+            .glass-card { padding: 22px 18px; }
+            .btn-abrir { font-size: 14px; padding: 14px 8px; min-height: 52px; }
+            .carga-texto { font-size: 28px; }
+            .stat-num { font-size: 23px; }
+            .anillo-pct { font-size: 22px; }
+            .item-text { font-size: 15px; }
+        }
+        @media (min-height: 780px) {
+            .glass-card { padding: 32px 24px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- PANTALLA DE CARGA -->
-    <div class="pantalla-carga" id="pantallaCarga">
-        <div class="carga-icono">🛒</div>
-        <div class="carga-texto">Mis Compras</div>
-        <div class="carga-barra">
-            <div class="carga-progreso"></div>
-        </div>
+    <!-- SVG DEFS -->
+    <svg width="0" height="0" style="position:absolute">
+        <defs>
+            <linearGradient id="gradiente-anillo" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff6b1a"/>
+                <stop offset="50%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#22c55e"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="toastTexto">Listo</span>
     </div>
 
-    <!-- NOTIFICACIÓN DE INSTALACIÓN -->
-    <div class="install-prompt" id="installPrompt">
-        <button class="install-close" onclick="cerrarInstall()">✕</button>
-        <div class="install-icon">📲</div>
+    <!-- CARGA -->
+    <div class="pantalla-carga" id="pantallaCarga" role="status" aria-label="Cargando aplicación">
+        <div class="carga-hero">
+            <div class="carga-icono">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+            </div>
+        </div>
+        <div class="carga-texto">MIS COMPRAS</div>
+        <div class="carga-sub" id="cargaSub">Preparando carrito...</div>
+        <div class="carga-barra">
+            <div class="carga-progreso" id="cargaProgreso"></div>
+        </div>
+        <button class="carga-btn" id="cargaBtn" style="display:none">
+            <svg class="icon" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            TOCA PARA EMPEZAR
+        </button>
+    </div>
+
+    <!-- INSTALAR -->
+    <div class="install-prompt" id="installPrompt" role="dialog" aria-label="Instalar aplicación">
+        <button class="install-close" id="installClose" aria-label="Cerrar">
+            <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="install-icon">
+            <svg class="icon icon-lg" viewBox="0 0 24 24">
+                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                <line x1="12" y1="18" x2="12.01" y2="18"/>
+            </svg>
+        </div>
         <div class="install-text">
             <strong>Instalar Mis Compras</strong>
-            <small>Agrega la app a tu pantalla de inicio</small>
+            <small>Agrega la app a tu pantalla</small>
         </div>
         <button class="install-btn" id="btnInstalar">Instalar</button>
     </div>
 
-    <!-- OVERLAY para ventanas -->
-    <div class="overlay" id="overlay" onclick="cerrarTodasVentanas()"></div>
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay"></div>
 
-    <!-- VENTANA: PENDIENTES -->
-    <div class="ventana-flotante" id="ventanaPendientes">
-        <div class="ventana-header">
-            <div class="ventana-titulo" style="color: var(--accent);">
-                📋 Pendientes
-                <span class="ventana-contador" id="contadorPendientes" style="background: var(--accent-soft); color: var(--accent);">0</span>
+    <!-- DIÁLOGO CONFIRMACIÓN -->
+    <div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitulo">
+        <div class="confirm-box">
+            <div class="confirm-icon">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
             </div>
-            <button class="btn-cerrar" onclick="cerrarVentana('pendientes')">✕</button>
-        </div>
-        <div class="ventana-contenido">
-            <ul id="listaPendientes"></ul>
+            <div class="confirm-titulo" id="confirmTitulo">¿Eliminar?</div>
+            <div class="confirm-msg" id="confirmMsg">Esta acción no se puede deshacer.</div>
+            <div class="confirm-btns">
+                <button class="confirm-btn cancel" id="confirmCancel">Cancelar</button>
+                <button class="confirm-btn danger" id="confirmOk">Eliminar</button>
+            </div>
         </div>
     </div>
 
-    <!-- VENTANA: COMPRADOS -->
-    <div class="ventana-flotante" id="ventanaComprados">
+    <!-- VENTANA PENDIENTES -->
+    <div class="ventana pendientes" id="ventPendientes" role="dialog" aria-modal="true" aria-labelledby="titPendientes">
         <div class="ventana-header">
-            <div class="ventana-titulo" style="color: var(--accent2);">
-                ✓ Comprados
-                <span class="ventana-contador" id="contadorComprados" style="background: var(--accent2-soft); color: var(--accent2);">0</span>
+            <div class="ventana-titulo" id="titPendientes">
+                <span class="tit-icon"><svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+                Pendientes <span class="ventana-contador" id="contPend">0</span>
             </div>
-            <button class="btn-cerrar" onclick="cerrarVentana('comprados')">✕</button>
+            <button class="btn-cerrar" id="cerrarPend" aria-label="Cerrar">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
-        <div class="ventana-contenido">
+        <div class="ventana-body"><ul id="listaPendientes"></ul></div>
+    </div>
+
+    <!-- VENTANA COMPRADOS -->
+    <div class="ventana comprados" id="ventComprados" role="dialog" aria-modal="true" aria-labelledby="titComprados">
+        <div class="ventana-header">
+            <div class="ventana-titulo" id="titComprados">
+                <span class="tit-icon"><svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>
+                Comprados <span class="ventana-contador" id="contComp">0</span>
+            </div>
+            <button class="btn-cerrar" id="cerrarComp" aria-label="Cerrar">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div class="ventana-body">
             <ul id="listaComprados"></ul>
-            <button onclick="limpiarComprados()" class="btn-clear">🗑️ Limpiar todos los comprados</button>
+            <button class="btn-clear" id="btnLimpiar">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+                Limpiar comprados
+            </button>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="max-w-lg" id="contenidoPrincipal" style="opacity: 0; transition: opacity 0.6s ease 0.5s;">
+    <!-- PRINCIPAL -->
+    <div class="max-w-lg" id="principal" style="opacity: 0; transition: opacity 0.5s ease;">
         <div class="glass-card">
             <div class="text-center">
-                <h1 class="gradient-text">Mis Compras</h1>
-                <p class="subtitle">Organiza todo lo que necesitas en un solo lugar</p>
+                <h1>
+                    MIS COMPRAS
+                    <span class="title-icon" aria-hidden="true">
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                    </span>
+                </h1>
+                <p class="subtitle">Tu carrito <span>inteligente</span> del supermercado</p>
             </div>
 
-            <!-- Estadísticas: SOLO Comprado y Pendiente (sin Total) -->
-            <div class="flex gap-3 justify-center">
-                <div class="stat-pill done">
-                    <div class="stat-num" id="statDone">0</div>
-                    <div class="stat-label">Comprado</div>
+            <div class="progreso-wrap">
+                <div class="anillo-progreso" aria-label="Progreso de compras">
+                    <svg viewBox="0 0 96 96">
+                        <circle class="anillo-bg" cx="48" cy="48" r="42"/>
+                        <circle class="anillo-fill" id="anilloFill" cx="48" cy="48" r="42"/>
+                    </svg>
+                    <div class="anillo-texto">
+                        <span class="anillo-pct" id="pctText">0%</span>
+                        <span class="anillo-label">Listo</span>
+                    </div>
                 </div>
-                <div class="stat-pill pending">
-                    <div class="stat-num" id="statPending">0</div>
-                    <div class="stat-label">Pendiente</div>
+                <div class="stats-col">
+                    <div class="stat-pill done">
+                        <div class="stat-icon">
+                            <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-num" id="statDone">0</div>
+                            <div class="stat-label">Comprado</div>
+                        </div>
+                    </div>
+                    <div class="stat-pill pending">
+                        <div class="stat-icon">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-num" id="statPending">0</div>
+                            <div class="stat-label">Pendiente</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Entrada -->
             <div class="input-wrapper">
-                <input type="text" id="nuevoItem" class="input-field" placeholder="Agregar producto..." autocomplete="off">
-                <button onclick="agregar()" class="btn-add">+</button>
+                <input type="text" id="nuevoItem" class="input-field" placeholder="Agregar producto al carrito..." autocomplete="off" enterkeyhint="done" aria-label="Nuevo producto">
+                <button class="btn-add" id="btnAdd" aria-label="Agregar producto">
+                    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
             </div>
         </div>
 
-        <!-- Botones para abrir ventanas -->
         <div class="botones-fila">
-            <button class="btn-abrir-ventana pendientes" onclick="abrirVentana('pendientes')">
-                📋 Ver Pendientes
+            <button class="btn-abrir pendientes" id="btnVerPendientes">
+                <svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                Pendientes
             </button>
-            <button class="btn-abrir-ventana comprados" onclick="abrirVentana('comprados')">
-                ✓ Ver Comprados
+            <button class="btn-abrir comprados" id="btnVerComprados">
+                <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                Comprados
             </button>
         </div>
     </div>
 
     <script>
-        // OCULTAR PANTALLA DE CARGA + MOSTRAR INSTALL PROMPT
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.getElementById('pantallaCarga').classList.add('oculta');
-                document.getElementById('contenidoPrincipal').style.opacity = '1';
-                reproducirSonido('bienvenida');
+    (function() {
+        'use strict';
 
-                // Mostrar notificación de instalación 1 segundo después de entrar
-                setTimeout(() => {
-                    const yaInstalada = window.matchMedia('(display-mode: standalone)').matches;
-                    const yaCerrada = localStorage.getItem('installPromptCerrada');
-                    if (!yaInstalada && !yaCerrada) {
-                        document.getElementById('installPrompt').classList.add('mostrar');
-                    }
-                }, 1000);
-            }, 2000);
-        });
+        // ========== AUDIO ==========
+        var AC = null;
+        try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) { AC = null; }
+        var VOL = 0.5;
+        var fanfarriaYaSonó = false;
 
-        // NOTIFICACIÓN DE INSTALACIÓN
-        let deferredPrompt;
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
-
-        document.getElementById('btnInstalar').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                await deferredPrompt.userChoice;
-                deferredPrompt = null;
-                cerrarInstall();
-            } else {
-                alert('Para instalar: toca los 3 puntitos de Chrome ⋮ y elige "Instalar app" o "Agregar a pantalla de inicio"');
-            }
-        });
-
-        function cerrarInstall() {
-            document.getElementById('installPrompt').classList.remove('mostrar');
-            localStorage.setItem('installPromptCerrada', 'true');
-        }
-
-        // SISTEMA DE SONIDOS
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const VOLUMEN = 0.6;
-
-        function reproducirSonido(tipo) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            const t = audioCtx.currentTime;
-
-            switch(tipo) {
-                case 'agregar':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, t);
-                    osc.frequency.exponentialRampToValueAtTime(880, t + 0.15);
-                    gain.gain.setValueAtTime(VOLUMEN, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-                    osc.start(t); osc.stop(t + 0.18);
-                    break;
-                case 'agregarExtra':
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523, t);
-                    osc.frequency.setValueAtTime(659, t + 0.06);
-                    osc.frequency.setValueAtTime(784, t + 0.12);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.8, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-                    osc.start(t); osc.stop(t + 0.18);
-                    break;
-                case 'check':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(660, t);
-                    osc.frequency.setValueAtTime(880, t + 0.08);
-                    gain.gain.setValueAtTime(VOLUMEN, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-                    osc.start(t); osc.stop(t + 0.15);
-                    break;
-                case 'uncheck':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, t);
-                    osc.frequency.setValueAtTime(330, t + 0.08);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.8, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-                    osc.start(t); osc.stop(t + 0.15);
-                    break;
-                case 'eliminar':
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(440, t);
-                    osc.frequency.exponentialRampToValueAtTime(110, t + 0.25);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.9, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
-                    osc.start(t); osc.stop(t + 0.28);
-                    break;
-                case 'clear':
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(330, t);
-                    osc.frequency.setValueAtTime(220, t + 0.1);
-                    osc.frequency.setValueAtTime(110, t + 0.2);
-                    osc.frequency.setValueAtTime(55, t + 0.35);
-                    gain.gain.setValueAtTime(VOLUMEN, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
-                    osc.start(t); osc.stop(t + 0.4);
-                    break;
-                case 'abrir':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, t);
-                    osc.frequency.setValueAtTime(523, t + 0.1);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.7, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-                    osc.start(t); osc.stop(t + 0.15);
-                    break;
-                case 'cerrar':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523, t);
-                    osc.frequency.setValueAtTime(392, t + 0.1);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.7, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
-                    osc.start(t); osc.stop(t + 0.15);
-                    break;
-                case 'tecla':
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(660 + Math.random() * 60, t);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.25, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-                    osc.start(t); osc.stop(t + 0.06);
-                    break;
-                case 'move':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523, t);
-                    osc.frequency.setValueAtTime(659, t + 0.06);
-                    osc.frequency.setValueAtTime(784, t + 0.12);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.85, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-                    osc.start(t); osc.stop(t + 0.18);
-                    break;
-                case 'bienvenida':
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(330, t);
-                    osc.frequency.setValueAtTime(440, t + 0.15);
-                    osc.frequency.setValueAtTime(554, t + 0.3);
-                    osc.frequency.setValueAtTime(660, t + 0.45);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.75, t);
-                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-                    osc.start(t); osc.stop(t + 0.5);
-                    break;
+        function activarAudio() {
+            if (AC && AC.state === 'suspended') {
+                try { AC.resume(); } catch(e) {}
             }
         }
+        document.addEventListener('touchstart', activarAudio, { passive: true, once: true });
+        document.addEventListener('click', activarAudio, { once: true });
 
-        // VENTANAS FLOTANTES
-        function abrirVentana(nombre) {
-            document.getElementById('overlay').classList.add('activo');
-            document.getElementById('ventana' + capitalize(nombre)).classList.add('activo');
-            reproducirSonido('abrir');
+        // Truco: intentar desbloquear audio con un sonido inaudible al cargar
+        function desbloquearAudioSilencio() {
+            if (!AC || AC.state === 'running') return;
+            try {
+                AC.resume().then(function() {
+                    // Reproducir un sonido casi inaudible para "activar" el contexto
+                    var o = AC.createOscillator();
+                    var g = AC.createGain();
+                    o.connect(g); g.connect(AC.destination);
+                    o.frequency.value = 1000;
+                    g.gain.value = 0.0001; // Casi silencioso
+                    o.start();
+                    o.stop(AC.currentTime + 0.01);
+                }).catch(function() {});
+            } catch(e) {}
         }
 
-        function cerrarVentana(nombre) {
-            document.getElementById('ventana' + capitalize(nombre)).classList.remove('activo');
-            if (!document.querySelector('.ventana-flotante.activo')) {
-                document.getElementById('overlay').classList.remove('activo');
-            }
-            reproducirSonido('cerrar');
+        function tocarNota(freq, inicio, duracion, tipo, vol) {
+            if (!AC) return;
+            try {
+                var o = AC.createOscillator();
+                var g = AC.createGain();
+                o.connect(g); g.connect(AC.destination);
+                o.type = tipo || 'triangle';
+                var t = AC.currentTime + inicio;
+                o.frequency.setValueAtTime(freq, t);
+                g.gain.setValueAtTime(0, t);
+                g.gain.linearRampToValueAtTime(vol, t + 0.01);
+                g.gain.exponentialRampToValueAtTime(0.001, t + duracion);
+                o.start(t);
+                o.stop(t + duracion + 0.02);
+            } catch(e) {}
         }
 
-        function cerrarTodasVentanas() {
-            document.querySelectorAll('.ventana-flotante.activo').forEach(v => v.classList.remove('activo'));
-            document.getElementById('overlay').classList.remove('activo');
-            reproducirSonido('cerrar');
-        }
-
-        function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-        // DATOS
-        let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
-        const input = document.getElementById('nuevoItem');
-
-        function agregar() {
-            const texto = input.value.trim();
-            if (!texto) return;
-            items.push({ texto: texto, hecho: false, id: Date.now() });
-            guardarYRender();
-            input.value = '';
-            reproducirSonido('agregar');
-            setTimeout(() => reproducirSonido('agregarExtra'), 80);
-        }
-
-        input.addEventListener('input', () => reproducirSonido('tecla'));
-        input.addEventListener('keypress', e => { if (e.key === 'Enter') agregar(); });
-
-        function marcarHecho(id) {
-            const item = items.find(i => i.id === id);
-            if (item) {
-                const estabaHecho = item.hecho;
-                item.hecho = !item.hecho;
-                if (item.hecho && !estabaHecho) {
-                    reproducirSonido('check');
-                    setTimeout(() => reproducirSonido('move'), 100);
-                } else {
-                    reproducirSonido('uncheck');
+        function fanfarriaEpica() {
+            if (fanfarriaYaSonó) return;
+            fanfarriaYaSonó = true;
+            if (!AC) return;
+            
+            // INTENTO 1: Tocar inmediatamente (funciona si el navegador lo permite)
+            var sonó = false;
+            try {
+                if (AC.state === 'running') {
+                    _fanfarriaInterna();
+                    sonó = true;
+                } else if (AC.state === 'suspended') {
+                    // Intentar desbloquear al cargar
+                    AC.resume().then(function() {
+                        if (AC.state === 'running') {
+                            _fanfarriaInterna();
+                            sonó = true;
+                        }
+                    }).catch(function() {});
                 }
-                guardarYRender();
+            } catch(e) {}
+            
+            // INTENTO 2: Si no sonó, sonar en el primer toque/tecla del usuario
+            if (!sonó) {
+                var tocarAlPrimerToque = function() {
+                    activarAudio();
+                    setTimeout(_fanfarriaInterna, 40);
+                };
+                document.addEventListener('touchstart', tocarAlPrimerToque, { passive: true, once: true });
+                document.addEventListener('click', tocarAlPrimerToque, { once: true });
+                document.addEventListener('keydown', tocarAlPrimerToque, { once: true });
+            }
+        }
+
+        function _fanfarriaInterna() {
+            var c = 0.13;
+            tocarNota(261.63, 0,    0.17, 'triangle', VOL * 0.6);
+            tocarNota(329.63, c,    0.17, 'triangle', VOL * 0.6);
+            tocarNota(392.00, c*2,  0.17, 'triangle', VOL * 0.6);
+            tocarNota(523.25, c*3,  0.19, 'triangle', VOL * 0.65);
+            tocarNota(659.25, c*4,  0.19, 'triangle', VOL * 0.65);
+            tocarNota(783.99, c*5,  0.21, 'triangle', VOL * 0.7);
+            tocarNota(1046.50,c*6,  0.32, 'sine',     VOL * 0.75);
+            tocarNota(130.81, c*7,  0.42, 'sine',     VOL * 0.85);
+        }
+
+        function sonido(t) {
+            if (!AC) return;
+            activarAudio();
+            try {
+                var o = AC.createOscillator(), g = AC.createGain();
+                o.connect(g); g.connect(AC.destination);
+                var x = AC.currentTime;
+                switch(t) {
+                    case 'agregar': 
+                        o.type='triangle';
+                        o.frequency.setValueAtTime(523,x); o.frequency.setValueAtTime(659,x+0.07); o.frequency.setValueAtTime(784,x+0.14);
+                        g.gain.setValueAtTime(VOL,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.22);
+                        o.start(x); o.stop(x+0.22); break;
+                    case 'check': 
+                        o.type='sine';
+                        o.frequency.setValueAtTime(659,x); o.frequency.setValueAtTime(784,x+0.06); o.frequency.setValueAtTime(1047,x+0.12);
+                        g.gain.setValueAtTime(VOL*0.85,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.22);
+                        o.start(x); o.stop(x+0.22); break;
+                    case 'uncheck': 
+                        o.type='sine';
+                        o.frequency.setValueAtTime(523,x); o.frequency.setValueAtTime(392,x+0.1);
+                        g.gain.setValueAtTime(VOL*0.65,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.16);
+                        o.start(x); o.stop(x+0.16); break;
+                    case 'eliminar': 
+                        o.type='sawtooth';
+                        o.frequency.setValueAtTime(330,x); o.frequency.exponentialRampToValueAtTime(65,x+0.28);
+                        g.gain.setValueAtTime(VOL*0.4,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.3);
+                        o.start(x); o.stop(x+0.3); break;
+                    case 'abrir': 
+                        o.type='sine';
+                        o.frequency.setValueAtTime(440,x); o.frequency.exponentialRampToValueAtTime(880,x+0.12);
+                        g.gain.setValueAtTime(VOL*0.5,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.15);
+                        o.start(x); o.stop(x+0.15); break;
+                    case 'cerrar': 
+                        o.type='sine';
+                        o.frequency.setValueAtTime(660,x); o.frequency.exponentialRampToValueAtTime(220,x+0.18);
+                        g.gain.setValueAtTime(VOL*0.4,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.2);
+                        o.start(x); o.stop(x+0.2); break;
+                    case 'completar':
+                        o.type='sine';
+                        o.frequency.setValueAtTime(523,x); o.frequency.setValueAtTime(659,x+0.08);
+                        o.frequency.setValueAtTime(784,x+0.16); o.frequency.setValueAtTime(1047,x+0.24);
+                        g.gain.setValueAtTime(VOL*0.7,x); g.gain.exponentialRampToValueAtTime(0.001,x+0.4);
+                        o.start(x); o.stop(x+0.4); break;
+                }
+            } catch(e) {}
+        }
+
+        // Vibración háptica
+        function vibrar(patron) {
+            if (navigator.vibrate) {
+                try { navigator.vibrate(patron); } catch(e) {}
+            }
+        }
+
+        // ========== STORAGE ==========
+        var STORAGE_KEY = 'listaCompras_v2';
+        function cargarItems() {
+            try {
+                var raw = localStorage.getItem(STORAGE_KEY);
+                return raw ? JSON.parse(raw) : [];
+            } catch(e) { return []; }
+        }
+        function guardarItems(items) {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); return true; }
+            catch(e) { return false; }
+        }
+        function getStorageFlag(k) {
+            try { return localStorage.getItem(k); } catch(e) { return null; }
+        }
+        function setStorageFlag(k, v) {
+            try { localStorage.setItem(k, v); } catch(e) {}
+        }
+
+        // ========== ESTADO ==========
+        var items = cargarItems();
+        var confirmCallback = null;
+
+        // ========== DOM CACHE ==========
+        var $ = function(id) { return document.getElementById(id); };
+        var el = {
+            pantallaCarga: $('pantallaCarga'),
+            cargaProgreso: $('cargaProgreso'),
+            cargaSub: $('cargaSub'),
+            cargaBtn: $('cargaBtn'),
+            principal: $('principal'),
+            installPrompt: $('installPrompt'),
+            installClose: $('installClose'),
+            btnInstalar: $('btnInstalar'),
+            overlay: $('overlay'),
+            ventPendientes: $('ventPendientes'),
+            ventComprados: $('ventComprados'),
+            cerrarPend: $('cerrarPend'),
+            cerrarComp: $('cerrarComp'),
+            listaPendientes: $('listaPendientes'),
+            listaComprados: $('listaComprados'),
+            contPend: $('contPend'),
+            contComp: $('contComp'),
+            statDone: $('statDone'),
+            statPending: $('statPending'),
+            nuevoItem: $('nuevoItem'),
+            btnAdd: $('btnAdd'),
+            btnVerPendientes: $('btnVerPendientes'),
+            btnVerComprados: $('btnVerComprados'),
+            btnLimpiar: $('btnLimpiar'),
+            anilloFill: $('anilloFill'),
+            pctText: $('pctText'),
+            confirmOverlay: $('confirmOverlay'),
+            confirmTitulo: $('confirmTitulo'),
+            confirmMsg: $('confirmMsg'),
+            confirmOk: $('confirmOk'),
+            confirmCancel: $('confirmCancel'),
+            toast: $('toast'),
+            toastTexto: $('toastTexto')
+        };
+
+        // ========== VENTANAS ==========
+        function abrirVent(n) {
+            el.overlay.classList.add('activo');
+            el['vent' + cap(n)].classList.add('activo');
+            sonido('abrir');
+            vibrar(10);
+        }
+        function cerrarVent(n) {
+            el['vent' + cap(n)].classList.remove('activo');
+            if (!document.querySelector('.ventana.activo')) el.overlay.classList.remove('activo');
+            sonido('cerrar');
+        }
+        function cerrarTodas() {
+            document.querySelectorAll('.ventana.activo').forEach(function(v) { v.classList.remove('activo'); });
+            el.overlay.classList.remove('activo');
+            sonido('cerrar');
+        }
+        function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        el.overlay.addEventListener('click', cerrarTodas);
+        el.cerrarPend.addEventListener('click', function() { cerrarVent('pendientes'); });
+        el.cerrarComp.addEventListener('click', function() { cerrarVent('comprados'); });
+        el.btnVerPendientes.addEventListener('click', function() { abrirVent('pendientes'); });
+        el.btnVerComprados.addEventListener('click', function() { abrirVent('comprados'); });
+
+        // Cerrar con tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (el.confirmOverlay.classList.contains('activo')) cerrarConfirm();
+                else if (el.overlay.classList.contains('activo')) cerrarTodas();
+            }
+        });
+
+        // ========== TOAST ==========
+        var toastTimer = null;
+        function mostrarToast(texto) {
+            el.toastTexto.textContent = texto;
+            el.toast.classList.add('mostrar');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(function() { el.toast.classList.remove('mostrar'); }, 2200);
+        }
+
+        // ========== CONFIRMAR ==========
+        function mostrarConfirm(titulo, msg, callback) {
+            el.confirmTitulo.textContent = titulo;
+            el.confirmMsg.textContent = msg;
+            confirmCallback = callback;
+            el.confirmOverlay.classList.add('activo');
+        }
+        function cerrarConfirm() {
+            el.confirmOverlay.classList.remove('activo');
+            confirmCallback = null;
+        }
+        el.confirmCancel.addEventListener('click', cerrarConfirm);
+        el.confirmOk.addEventListener('click', function() {
+            var cb = confirmCallback;
+            cerrarConfirm();
+            if (cb) cb();
+        });
+        el.confirmOverlay.addEventListener('click', function(e) {
+            if (e.target === el.confirmOverlay) cerrarConfirm();
+        });
+
+        // ========== ACCIONES ITEMS ==========
+        function agregar() {
+            var t = el.nuevoItem.value.trim();
+            if (!t) { el.nuevoItem.focus(); return; }
+            items.push({ texto: t, hecho: false, id: Date.now() });
+            guardarItems(items);
+            el.nuevoItem.value = '';
+            el.nuevoItem.focus();
+            render();
+            sonido('agregar');
+            vibrar(15);
+        }
+
+        function marcar(id) {
+            var it = items.find(function(i) { return i.id === id; });
+            if (!it) return;
+            it.hecho = !it.hecho;
+            guardarItems(items);
+            render();
+            sonido(it.hecho ? 'check' : 'uncheck');
+            vibrar(it.hecho ? [10, 20, 10] : 10);
+            
+            // ¿Completó todo?
+            if (it.hecho && items.length > 0 && items.every(function(i) { return i.hecho; })) {
+                setTimeout(function() {
+                    sonido('completar');
+                    vibrar([20, 40, 20, 40, 60]);
+                    el.principal.classList.add('celebrar');
+                    setTimeout(function() { el.principal.classList.remove('celebrar'); }, 600);
+                    mostrarToast('¡Carrito completado!');
+                }, 120);
             }
         }
 
         function eliminar(id) {
-            const li = document.querySelector('li[data-id="' + id + '"]');
-            if (li) {
-                li.classList.add('removing');
-                setTimeout(() => {
-                    items = items.filter(i => i.id !== id);
-                    guardarYRender();
-                }, 280);
-            }
-            reproducirSonido('eliminar');
+            var li = document.querySelector('li[data-id="' + id + '"]');
+            if (li) li.classList.add('removing');
+            sonido('eliminar');
+            vibrar([15, 10, 15]);
+            setTimeout(function() {
+                items = items.filter(function(i) { return i.id !== id; });
+                guardarItems(items);
+                render();
+            }, 280);
         }
 
         function limpiarComprados() {
-            const comprados = items.filter(i => i.hecho).length;
-            if (comprados === 0) return;
-            if (confirm('¿Eliminar todos los productos comprados?')) {
-                items = items.filter(i => !i.hecho);
-                guardarYRender();
-                reproducirSonido('clear');
+            if (!items.some(function(i) { return i.hecho; })) return;
+            mostrarConfirm(
+                '¿Eliminar comprados?',
+                'Se borrarán todos los productos marcados como comprados.',
+                function() {
+                    items = items.filter(function(i) { return !i.hecho; });
+                    guardarItems(items);
+                    render();
+                    sonido('eliminar');
+                    vibrar(30);
+                    mostrarToast('Comprados eliminados');
+                }
+            );
+        }
+
+        el.btnAdd.addEventListener('click', agregar);
+        el.nuevoItem.addEventListener('keypress', function(e) { if (e.key === 'Enter') agregar(); });
+        el.btnLimpiar.addEventListener('click', limpiarComprados);
+
+        // Event delegation en listas
+        el.listaPendientes.addEventListener('click', manejarClickLista);
+        el.listaComprados.addEventListener('click', manejarClickLista);
+
+        function manejarClickLista(e) {
+            var btn = e.target.closest('button');
+            if (!btn) return;
+            var li = btn.closest('li');
+            if (!li) return;
+            var id = parseInt(li.getAttribute('data-id'), 10);
+            if (isNaN(id)) return;
+            
+            if (btn.classList.contains('btn-check') || btn.classList.contains('btn-uncheck')) {
+                marcar(id);
+            } else if (btn.classList.contains('btn-del')) {
+                eliminar(id);
             }
         }
 
-        function guardarYRender() {
-            localStorage.setItem('listaCompras', JSON.stringify(items));
-            renderizar();
+        // ========== RENDER ==========
+        function escaparHtml(t) {
+            var d = document.createElement('div');
+            d.textContent = t;
+            return d.innerHTML;
         }
 
-        function actualizarStats() {
-            const elDone = document.getElementById('statDone');
-            const elPending = document.getElementById('statPending');
-            const elContPend = document.getElementById('contadorPendientes');
-            const elContComp = document.getElementById('contadorComprados');
-            
-            const hechos = items.filter(i => i.hecho).length;
-            const pendientes = items.filter(i => !i.hecho).length;
-            
-            elDone.textContent = hechos;
-            elPending.textContent = pendientes;
-            elContPend.textContent = pendientes;
-            elContComp.textContent = hechos;
-            
-            [elDone, elPending].forEach(el => {
-                el.classList.add('stat-bump');
-                setTimeout(() => el.classList.remove('stat-bump'), 200);
+        function crearBotonSVG(clase, pathD, ariaLabel) {
+            var btn = document.createElement('button');
+            btn.className = clase;
+            btn.setAttribute('aria-label', ariaLabel);
+            btn.innerHTML = '<svg class="icon" viewBox="0 0 24 24">' + pathD + '</svg>';
+            return btn;
+        }
+
+        function crearItem(it, esPendiente, idx) {
+            var li = document.createElement('li');
+            li.setAttribute('data-id', String(it.id));
+            li.style.animationDelay = (idx * 35) + 'ms';
+            if (!esPendiente) li.classList.add('done');
+
+            var span = document.createElement('span');
+            span.className = 'item-text';
+            span.textContent = it.texto;
+
+            var acciones = document.createElement('div');
+            acciones.className = 'item-acciones';
+
+            if (esPendiente) {
+                acciones.appendChild(crearBotonSVG('btn-check', '<polyline points="20 6 9 17 4 12"/>', 'Marcar como comprado'));
+            } else {
+                acciones.appendChild(crearBotonSVG('btn-uncheck', '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>', 'Desmarcar'));
+            }
+            acciones.appendChild(crearBotonSVG('btn-del', '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', 'Eliminar'));
+
+            li.appendChild(span);
+            li.appendChild(acciones);
+            return li;
+        }
+
+        function crearEmptyState(iconPath, texto) {
+            var li = document.createElement('li');
+            li.className = 'empty-state';
+            li.style.cssText = 'animation:none;background:transparent;border:none;';
+            li.innerHTML = '<span class="empty-icon"><svg class="icon" viewBox="0 0 24 24">' + iconPath + '</svg></span><span>' + texto + '</span>';
+            return li;
+        }
+
+        function render() {
+            var fragPend = document.createDocumentFragment();
+            var fragComp = document.createDocumentFragment();
+            var pend = items.filter(function(i) { return !i.hecho; });
+            var comp = items.filter(function(i) { return i.hecho; });
+
+            if (pend.length === 0) {
+                fragPend.appendChild(crearEmptyState(
+                    '<circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>',
+                    'Agrega productos a tu carrito'
+                ));
+            } else {
+                pend.forEach(function(it, idx) { fragPend.appendChild(crearItem(it, true, idx)); });
+            }
+
+            if (comp.length === 0) {
+                fragComp.appendChild(crearEmptyState(
+                    '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/>',
+                    'Aún no has comprado nada'
+                ));
+            } else {
+                comp.forEach(function(it, idx) { fragComp.appendChild(crearItem(it, false, idx)); });
+            }
+
+            el.listaPendientes.innerHTML = '';
+            el.listaComprados.innerHTML = '';
+            el.listaPendientes.appendChild(fragPend);
+            el.listaComprados.appendChild(fragComp);
+
+            actualizarStats(pend.length, comp.length);
+        }
+
+        function actualizarStats(pendCount, compCount) {
+            var total = pendCount + compCount;
+            var pct = total > 0 ? Math.round((compCount / total) * 100) : 0;
+            var circunferencia = 264; // 2 * PI * 42
+            var offset = circunferencia - (pct / 100) * circunferencia;
+
+            el.anilloFill.style.strokeDashoffset = String(offset);
+            el.pctText.textContent = pct + '%';
+
+            var nums = [
+                [el.statDone, compCount],
+                [el.statPending, pendCount],
+                [el.contPend, pendCount],
+                [el.contComp, compCount]
+            ];
+            nums.forEach(function(par) {
+                var elDom = par[0], val = par[1];
+                if (elDom.textContent !== String(val)) {
+                    elDom.textContent = val;
+                    if (elDom.classList.contains('stat-num')) {
+                        elDom.classList.remove('stat-bump');
+                        void elDom.offsetWidth; // reflow
+                        elDom.classList.add('stat-bump');
+                    }
+                }
             });
         }
 
-        function renderizar() {
-            const listaPendientes = document.getElementById('listaPendientes');
-            const listaComprados = document.getElementById('listaComprados');
-            listaPendientes.innerHTML = '';
-            listaComprados.innerHTML = '';
+        // ========== INSTALAR PWA ==========
+        var defPrompt = null;
+        window.addEventListener('beforeinstallprompt', function(e) {
+            e.preventDefault();
+            defPrompt = e;
+        });
 
-            const pendientes = items.filter(i => !i.hecho);
-            const comprados = items.filter(i => i.hecho);
-
-            actualizarStats();
-
-            if (pendientes.length === 0) {
-                listaPendientes.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">No hay productos pendientes</li>';
+        el.btnInstalar.addEventListener('click', async function() {
+            if (defPrompt) {
+                try {
+                    defPrompt.prompt();
+                    await defPrompt.userChoice;
+                } catch(e) {}
+                defPrompt = null;
+                cerrarInstall();
             } else {
-                pendientes.forEach((item, idx) => {
-                    const li = document.createElement('li');
-                    li.setAttribute('data-id', item.id);
-                    li.style.animationDelay = (idx * 50) + 'ms';
-                    li.innerHTML = `
-                        <span class="item-text">${escapeHtml(item.texto)}</span>
-                        <div class="item-actions">
-                            <button class="btn-check" onclick="marcarHecho(${item.id})">✓</button>
-                            <button class="btn-delete" onclick="eliminar(${item.id})">✕</button>
-                        </div>
-                    `;
-                    listaPendientes.appendChild(li);
-                });
+                mostrarToast('Toca los 3 puntitos → "Instalar app"');
             }
+        });
 
-            if (comprados.length === 0) {
-                listaComprados.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">Aún no has comprado nada</li>';
-            } else {
-                comprados.forEach((item, idx) => {
-                    const li = document.createElement('li');
-                    li.className = 'done';
-                    li.setAttribute('data-id', item.id);
-                    li.style.animationDelay = (idx * 50) + 'ms';
-                    li.innerHTML = `
-                        <span class="item-text">${escapeHtml(item.texto)}</span>
-                        <div class="item-actions">
-                            <button class="btn-uncheck" onclick="marcarHecho(${item.id})">↩</button>
-                            <button class="btn-delete" onclick="eliminar(${item.id})">✕</button>
-                        </div>
-                    `;
-                    listaComprados.appendChild(li);
-                });
-            }
+        el.installClose.addEventListener('click', cerrarInstall);
+
+        function cerrarInstall() {
+            el.installPrompt.classList.remove('mostrar');
+            setStorageFlag('installCerrada', '1');
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function esStandalone() {
+            try {
+                return window.matchMedia('(display-mode: standalone)').matches ||
+                       window.navigator.standalone === true;
+            } catch(e) { return false; }
         }
 
-        renderizar();
+        // ========== INICIO ==========
+        function iniciarApp() {
+            desbloquearAudioSilencio();
+            
+            var tieneLista = items.length > 0;
+            var duracionCarga;
+            
+            if (tieneLista) {
+                el.cargaProgreso.className = 'carga-progreso rapida';
+                el.cargaSub.textContent = '¡Bienvenido de vuelta!';
+                duracionCarga = 550;
+            } else {
+                el.cargaProgreso.className = 'carga-progreso lenta';
+                el.cargaSub.textContent = 'Preparando tu carrito...';
+                duracionCarga = 2050;
+            }
+            
+            // Cuando termina la barra de carga, mostrar el botón
+            setTimeout(mostrarBotonComenzar, duracionCarga);
+        }
+
+        function mostrarBotonComenzar() {
+            el.cargaSub.textContent = 'Listo para comenzar';
+            el.cargaBtn.style.display = 'inline-flex';
+            
+            // Forzar reflow antes de agregar la clase para que la animación funcione
+            void el.cargaBtn.offsetWidth;
+            el.cargaBtn.classList.add('visible');
+            el.pantallaCarga.classList.add('lista-para-empezar');
+            
+            // Al tocar el botón o cualquier parte de la pantalla → sonar + entrar
+            function comenzar() {
+                el.cargaBtn.removeEventListener('click', comenzar);
+                el.pantallaCarga.removeEventListener('click', comenzar);
+                el.pantallaCarga.removeEventListener('touchstart', comenzar);
+                
+                activarAudio();
+                // Sonar fanfarria inmediatamente (garantizado porque hubo interacción)
+                fanfarriaYaSonó = true;
+                if (AC) {
+                    try {
+                        if (AC.state === 'suspended') AC.resume();
+                        setTimeout(_fanfarriaInterna, 30);
+                    } catch(e) {}
+                }
+                vibrar([15, 30, 15]);
+                
+                // Pequeña pausa para que se escuche el inicio de la fanfarria
+                setTimeout(entrarApp, 180);
+            }
+            
+            el.cargaBtn.addEventListener('click', comenzar);
+            el.pantallaCarga.addEventListener('click', comenzar);
+            el.pantallaCarga.addEventListener('touchstart', comenzar, { passive: true });
+        }
+
+        function entrarApp() {
+            el.pantallaCarga.classList.add('oculta');
+            el.principal.style.opacity = '1';
+            render();
+            
+            setTimeout(function() {
+                if (!esStandalone() && !getStorageFlag('installCerrada')) {
+                    el.installPrompt.classList.add('mostrar');
+                }
+            }, 700);
+        }
+
+        // Iniciar cuando el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', iniciarApp);
+        } else {
+            iniciarApp();
+        }
+
+    })();
     </script>
 </body>
 </html>
