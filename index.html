@@ -8,20 +8,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icon.png">
-    <title>Mis Compras 🛒</title>
+    <title>Mis Compras</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(function() { console.log('Service Worker registrado ✅'); })
+                    .then(function() { console.log('Service Worker registrado'); })
                     .catch(function(err) { console.log('SW error:', err); });
             });
         }
     </script>
     <style>
         :root {
-            --bg: #fefcf8;
             --card: rgba(255,255,255,0.92);
             --card-solid: #ffffff;
             --text: #0f172a;
@@ -47,13 +46,11 @@
             justify-content: center;
         }
 
-        /* ========== PANTALLA DE CARGA ========== */
+        /* PANTALLA DE CARGA */
         .pantalla-carga {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: linear-gradient(135deg, var(--accent), var(--accent2));
             display: flex;
             flex-direction: column;
@@ -62,10 +59,7 @@
             z-index: 9999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .pantalla-carga.oculta {
-            opacity: 0;
-            visibility: hidden;
-        }
+        .pantalla-carga.oculta { opacity: 0; visibility: hidden; }
         .carga-icono {
             font-size: 60px;
             animation: bounce 1s ease infinite alternate;
@@ -82,8 +76,7 @@
             margin-bottom: 25px;
         }
         .carga-barra {
-            width: 200px;
-            height: 6px;
+            width: 200px; height: 6px;
             background: rgba(255,255,255,0.3);
             border-radius: 3px;
             overflow: hidden;
@@ -100,7 +93,72 @@
             100% { width: 100%; }
         }
 
-        /* ========== CONTENEDOR PRINCIPAL ========== */
+        /* NOTIFICACIÓN DE INSTALACIÓN */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            width: 92%;
+            max-width: 460px;
+            background: var(--card-solid);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px 40px 16px 18px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 9998;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .install-prompt.mostrar {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+        .install-icon { font-size: 30px; }
+        .install-text { flex: 1; }
+        .install-text strong {
+            display: block;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .install-text small {
+            color: var(--muted);
+            font-size: 13px;
+        }
+        .install-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(234,88,12,0.35);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .install-btn:active { transform: scale(0.95); }
+        .install-close {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 6px;
+            line-height: 1;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
         .max-w-lg { 
             width: 100%;
             max-width: 460px;
@@ -126,8 +184,6 @@
         .subtitle { color: var(--muted); font-size: 15px; margin-bottom: 24px; line-height: 1.4; }
         .flex { display: flex; }
         .gap-3 { gap: 12px; }
-        .gap-2 { gap: 8px; }
-        .gap-4 { gap: 14px; }
         .justify-center { justify-content: center; }
         .stat-pill {
             background: rgba(255,255,255,0.8);
@@ -140,6 +196,8 @@
         }
         .stat-num { font-size: 26px; font-weight: 700; color: var(--text); transition: transform 0.2s ease; }
         .stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 2px; }
+        .stat-pill.done .stat-num { color: var(--accent2); }
+        .stat-pill.pending .stat-num { color: var(--accent); }
         .input-wrapper { display: flex; gap: 12px; margin-top: 24px; }
         .input-field {
             flex: 1;
@@ -171,7 +229,7 @@
         }
         .btn-add:active { transform: scale(0.95); box-shadow: 0 3px 8px rgba(234,88,12,0.35); }
         
-        /* ========== BOTONES ========== */
+        /* BOTONES PRINCIPALES */
         .botones-fila {
             display: flex;
             gap: 14px;
@@ -198,7 +256,6 @@
         .btn-abrir-ventana.pendientes:active {
             background: linear-gradient(135deg, var(--accent-strong), #9a3412);
             transform: scale(0.96);
-            box-shadow: 0 3px 8px rgba(234,88,12,0.35);
         }
         .btn-abrir-ventana.comprados {
             background: linear-gradient(135deg, #4ade80, var(--accent2));
@@ -208,16 +265,13 @@
         .btn-abrir-ventana.comprados:active {
             background: linear-gradient(135deg, var(--accent2-strong), #166534);
             transform: scale(0.96);
-            box-shadow: 0 3px 8px rgba(22,163,74,0.35);
         }
 
-        /* ========== VENTANA FLOTANTE ========== */
+        /* VENTANA FLOTANTE */
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: var(--overlay);
             z-index: 100;
             opacity: 0;
@@ -225,14 +279,10 @@
             transition: opacity 0.3s ease, visibility 0.3s ease;
             backdrop-filter: blur(4px);
         }
-        .overlay.activo {
-            opacity: 1;
-            visibility: visible;
-        }
+        .overlay.activo { opacity: 1; visibility: visible; }
         .ventana-flotante {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -45%) scale(0.9);
             width: 92%;
             max-width: 460px;
@@ -267,9 +317,15 @@
             align-items: center;
             gap: 8px;
         }
+        .ventana-contador {
+            background: rgba(0,0,0,0.08);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
         .btn-cerrar {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border-radius: 50%;
             border: none;
             background: rgba(0,0,0,0.05);
@@ -280,10 +336,7 @@
             justify-content: center;
             transition: all 0.2s ease;
         }
-        .btn-cerrar:active {
-            background: rgba(0,0,0,0.1);
-            transform: scale(0.9);
-        }
+        .btn-cerrar:active { background: rgba(0,0,0,0.1); transform: scale(0.9); }
         .ventana-contenido {
             padding: 16px 22px 22px;
             overflow-y: auto;
@@ -343,7 +396,7 @@
 </head>
 <body>
 
-    <!-- ========== PANTALLA DE CARGA ========== -->
+    <!-- PANTALLA DE CARGA -->
     <div class="pantalla-carga" id="pantallaCarga">
         <div class="carga-icono">🛒</div>
         <div class="carga-texto">Mis Compras</div>
@@ -352,14 +405,26 @@
         </div>
     </div>
 
-    <!-- ========== OVERLAY para ventanas ========== -->
+    <!-- NOTIFICACIÓN DE INSTALACIÓN -->
+    <div class="install-prompt" id="installPrompt">
+        <button class="install-close" onclick="cerrarInstall()">✕</button>
+        <div class="install-icon">📲</div>
+        <div class="install-text">
+            <strong>Instalar Mis Compras</strong>
+            <small>Agrega la app a tu pantalla de inicio</small>
+        </div>
+        <button class="install-btn" id="btnInstalar">Instalar</button>
+    </div>
+
+    <!-- OVERLAY para ventanas -->
     <div class="overlay" id="overlay" onclick="cerrarTodasVentanas()"></div>
 
-    <!-- ========== VENTANA FLOTANTE: PENDIENTES ========== -->
+    <!-- VENTANA: PENDIENTES -->
     <div class="ventana-flotante" id="ventanaPendientes">
         <div class="ventana-header">
             <div class="ventana-titulo" style="color: var(--accent);">
-                📋 Pendientes <span id="ventanaContadorPendientes">(0)</span>
+                📋 Pendientes
+                <span class="ventana-contador" id="contadorPendientes" style="background: var(--accent-soft); color: var(--accent);">0</span>
             </div>
             <button class="btn-cerrar" onclick="cerrarVentana('pendientes')">✕</button>
         </div>
@@ -368,11 +433,12 @@
         </div>
     </div>
 
-    <!-- ========== VENTANA FLOTANTE: COMPRADOS ========== -->
+    <!-- VENTANA: COMPRADOS -->
     <div class="ventana-flotante" id="ventanaComprados">
         <div class="ventana-header">
             <div class="ventana-titulo" style="color: var(--accent2);">
-                ✓ Comprados <span id="ventanaContadorComprados">(0)</span>
+                ✓ Comprados
+                <span class="ventana-contador" id="contadorComprados" style="background: var(--accent2-soft); color: var(--accent2);">0</span>
             </div>
             <button class="btn-cerrar" onclick="cerrarVentana('comprados')">✕</button>
         </div>
@@ -382,25 +448,21 @@
         </div>
     </div>
 
-    <!-- ========== CONTENIDO PRINCIPAL - CENTRADO ========== -->
+    <!-- CONTENIDO PRINCIPAL -->
     <div class="max-w-lg" id="contenidoPrincipal" style="opacity: 0; transition: opacity 0.6s ease 0.5s;">
         <div class="glass-card">
             <div class="text-center">
-                <h1 class="gradient-text">Mis Compras 🛒</h1>
+                <h1 class="gradient-text">Mis Compras</h1>
                 <p class="subtitle">Organiza todo lo que necesitas en un solo lugar</p>
             </div>
 
-            <!-- Estadísticas -->
+            <!-- Estadísticas: SOLO Comprado y Pendiente (sin Total) -->
             <div class="flex gap-3 justify-center">
-                <div class="stat-pill">
-                    <div class="stat-num" id="statTotal">0</div>
-                    <div class="stat-label">Total</div>
-                </div>
-                <div class="stat-pill">
+                <div class="stat-pill done">
                     <div class="stat-num" id="statDone">0</div>
                     <div class="stat-label">Comprado</div>
                 </div>
-                <div class="stat-pill">
+                <div class="stat-pill pending">
                     <div class="stat-num" id="statPending">0</div>
                     <div class="stat-label">Pendiente</div>
                 </div>
@@ -413,7 +475,7 @@
             </div>
         </div>
 
-        <!-- Botones -->
+        <!-- Botones para abrir ventanas -->
         <div class="botones-fila">
             <button class="btn-abrir-ventana pendientes" onclick="abrirVentana('pendientes')">
                 📋 Ver Pendientes
@@ -425,18 +487,51 @@
     </div>
 
     <script>
-        // ========== OCULTAR PANTALLA DE CARGA ==========
+        // OCULTAR PANTALLA DE CARGA + MOSTRAR INSTALL PROMPT
         window.addEventListener('load', function() {
             setTimeout(function() {
                 document.getElementById('pantallaCarga').classList.add('oculta');
                 document.getElementById('contenidoPrincipal').style.opacity = '1';
                 reproducirSonido('bienvenida');
+
+                // Mostrar notificación de instalación 1 segundo después de entrar
+                setTimeout(() => {
+                    const yaInstalada = window.matchMedia('(display-mode: standalone)').matches;
+                    const yaCerrada = localStorage.getItem('installPromptCerrada');
+                    if (!yaInstalada && !yaCerrada) {
+                        document.getElementById('installPrompt').classList.add('mostrar');
+                    }
+                }, 1000);
             }, 2000);
         });
 
-        // ========== SISTEMA DE SONIDOS - VOLUMEN SUBIDO ==========
+        // NOTIFICACIÓN DE INSTALACIÓN
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        document.getElementById('btnInstalar').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                cerrarInstall();
+            } else {
+                alert('Para instalar: toca los 3 puntitos de Chrome ⋮ y elige "Instalar app" o "Agregar a pantalla de inicio"');
+            }
+        });
+
+        function cerrarInstall() {
+            document.getElementById('installPrompt').classList.remove('mostrar');
+            localStorage.setItem('installPromptCerrada', 'true');
+        }
+
+        // SISTEMA DE SONIDOS
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const VOLUMEN = 0.6; // Antes era 0.18, ¡ahora mucho más fuerte!
+        const VOLUMEN = 0.6;
 
         function reproducirSonido(tipo) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -444,114 +539,114 @@
             const gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-            const tiempo = audioCtx.currentTime;
+            const t = audioCtx.currentTime;
 
             switch(tipo) {
                 case 'agregar':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, tiempo);
-                    osc.frequency.exponentialRampToValueAtTime(880, tiempo + 0.15);
-                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
-                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    osc.frequency.setValueAtTime(440, t);
+                    osc.frequency.exponentialRampToValueAtTime(880, t + 0.15);
+                    gain.gain.setValueAtTime(VOLUMEN, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+                    osc.start(t); osc.stop(t + 0.18);
                     break;
                 case 'agregarExtra':
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523, tiempo);
-                    osc.frequency.setValueAtTime(659, tiempo + 0.06);
-                    osc.frequency.setValueAtTime(784, tiempo + 0.12);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.8, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
-                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    osc.frequency.setValueAtTime(523, t);
+                    osc.frequency.setValueAtTime(659, t + 0.06);
+                    osc.frequency.setValueAtTime(784, t + 0.12);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.8, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+                    osc.start(t); osc.stop(t + 0.18);
                     break;
                 case 'check':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(660, tiempo);
-                    osc.frequency.setValueAtTime(880, tiempo + 0.08);
-                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
-                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    osc.frequency.setValueAtTime(660, t);
+                    osc.frequency.setValueAtTime(880, t + 0.08);
+                    gain.gain.setValueAtTime(VOLUMEN, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                    osc.start(t); osc.stop(t + 0.15);
                     break;
                 case 'uncheck':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, tiempo);
-                    osc.frequency.setValueAtTime(330, tiempo + 0.08);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.8, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
-                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    osc.frequency.setValueAtTime(440, t);
+                    osc.frequency.setValueAtTime(330, t + 0.08);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.8, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                    osc.start(t); osc.stop(t + 0.15);
                     break;
                 case 'eliminar':
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(440, tiempo);
-                    osc.frequency.exponentialRampToValueAtTime(110, tiempo + 0.25);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.9, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.28);
-                    osc.start(tiempo); osc.stop(tiempo + 0.28);
+                    osc.frequency.setValueAtTime(440, t);
+                    osc.frequency.exponentialRampToValueAtTime(110, t + 0.25);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.9, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+                    osc.start(t); osc.stop(t + 0.28);
                     break;
                 case 'clear':
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(330, tiempo);
-                    osc.frequency.setValueAtTime(220, tiempo + 0.1);
-                    osc.frequency.setValueAtTime(110, tiempo + 0.2);
-                    osc.frequency.setValueAtTime(55, tiempo + 0.35);
-                    gain.gain.setValueAtTime(VOLUMEN, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.4);
-                    osc.start(tiempo); osc.stop(tiempo + 0.4);
+                    osc.frequency.setValueAtTime(330, t);
+                    osc.frequency.setValueAtTime(220, t + 0.1);
+                    osc.frequency.setValueAtTime(110, t + 0.2);
+                    osc.frequency.setValueAtTime(55, t + 0.35);
+                    gain.gain.setValueAtTime(VOLUMEN, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+                    osc.start(t); osc.stop(t + 0.4);
                     break;
                 case 'abrir':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, tiempo);
-                    osc.frequency.setValueAtTime(523, tiempo + 0.1);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.7, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
-                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    osc.frequency.setValueAtTime(440, t);
+                    osc.frequency.setValueAtTime(523, t + 0.1);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.7, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                    osc.start(t); osc.stop(t + 0.15);
                     break;
                 case 'cerrar':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523, tiempo);
-                    osc.frequency.setValueAtTime(392, tiempo + 0.1);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.7, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.15);
-                    osc.start(tiempo); osc.stop(tiempo + 0.15);
+                    osc.frequency.setValueAtTime(523, t);
+                    osc.frequency.setValueAtTime(392, t + 0.1);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.7, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+                    osc.start(t); osc.stop(t + 0.15);
                     break;
                 case 'tecla':
                     osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(660 + Math.random() * 60, tiempo);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.25, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.06);
-                    osc.start(tiempo); osc.stop(tiempo + 0.06);
+                    osc.frequency.setValueAtTime(660 + Math.random() * 60, t);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.25, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+                    osc.start(t); osc.stop(t + 0.06);
                     break;
                 case 'move':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523, tiempo);
-                    osc.frequency.setValueAtTime(659, tiempo + 0.06);
-                    osc.frequency.setValueAtTime(784, tiempo + 0.12);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.85, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.18);
-                    osc.start(tiempo); osc.stop(tiempo + 0.18);
+                    osc.frequency.setValueAtTime(523, t);
+                    osc.frequency.setValueAtTime(659, t + 0.06);
+                    osc.frequency.setValueAtTime(784, t + 0.12);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.85, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+                    osc.start(t); osc.stop(t + 0.18);
                     break;
                 case 'bienvenida':
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(330, tiempo);
-                    osc.frequency.setValueAtTime(440, tiempo + 0.15);
-                    osc.frequency.setValueAtTime(554, tiempo + 0.3);
-                    osc.frequency.setValueAtTime(660, tiempo + 0.45);
-                    gain.gain.setValueAtTime(VOLUMEN * 0.75, tiempo);
-                    gain.gain.exponentialRampToValueAtTime(0.001, tiempo + 0.5);
-                    osc.start(tiempo); osc.stop(tiempo + 0.5);
+                    osc.frequency.setValueAtTime(330, t);
+                    osc.frequency.setValueAtTime(440, t + 0.15);
+                    osc.frequency.setValueAtTime(554, t + 0.3);
+                    osc.frequency.setValueAtTime(660, t + 0.45);
+                    gain.gain.setValueAtTime(VOLUMEN * 0.75, t);
+                    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+                    osc.start(t); osc.stop(t + 0.5);
                     break;
             }
         }
 
-        // ========== VENTANAS FLOTANTES ==========
+        // VENTANAS FLOTANTES
         function abrirVentana(nombre) {
             document.getElementById('overlay').classList.add('activo');
-            document.getElementById(`ventana${capitalize(nombre)}`).classList.add('activo');
+            document.getElementById('ventana' + capitalize(nombre)).classList.add('activo');
             reproducirSonido('abrir');
         }
 
         function cerrarVentana(nombre) {
-            document.getElementById(`ventana${capitalize(nombre)}`).classList.remove('activo');
+            document.getElementById('ventana' + capitalize(nombre)).classList.remove('activo');
             if (!document.querySelector('.ventana-flotante.activo')) {
                 document.getElementById('overlay').classList.remove('activo');
             }
@@ -559,20 +654,17 @@
         }
 
         function cerrarTodasVentanas() {
-            document.querySelectorAll('.ventana-flotante.activo').forEach(v => {
-                v.classList.remove('activo');
-            });
+            document.querySelectorAll('.ventana-flotante.activo').forEach(v => v.classList.remove('activo'));
             document.getElementById('overlay').classList.remove('activo');
             reproducirSonido('cerrar');
         }
 
         function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-        // ========== DATOS ==========
+        // DATOS
         let items = JSON.parse(localStorage.getItem('listaCompras')) || [];
         const input = document.getElementById('nuevoItem');
 
-        // ========== AGREGAR ITEM ==========
         function agregar() {
             const texto = input.value.trim();
             if (!texto) return;
@@ -584,9 +676,7 @@
         }
 
         input.addEventListener('input', () => reproducirSonido('tecla'));
-        input.addEventListener('keypress', e => {
-            if (e.key === 'Enter') agregar();
-        });
+        input.addEventListener('keypress', e => { if (e.key === 'Enter') agregar(); });
 
         function marcarHecho(id) {
             const item = items.find(i => i.id === id);
@@ -604,7 +694,7 @@
         }
 
         function eliminar(id) {
-            const li = document.querySelector(`li[data-id="${id}"]`);
+            const li = document.querySelector('li[data-id="' + id + '"]');
             if (li) {
                 li.classList.add('removing');
                 setTimeout(() => {
@@ -631,24 +721,23 @@
         }
 
         function actualizarStats() {
-            const elTotal = document.getElementById('statTotal');
             const elDone = document.getElementById('statDone');
             const elPending = document.getElementById('statPending');
-            const total = items.length;
-            const hechos = items.filter(i => i.hecho).length;
-            const pendientes = total - hechos;
+            const elContPend = document.getElementById('contadorPendientes');
+            const elContComp = document.getElementById('contadorComprados');
             
-            elTotal.textContent = total;
+            const hechos = items.filter(i => i.hecho).length;
+            const pendientes = items.filter(i => !i.hecho).length;
+            
             elDone.textContent = hechos;
             elPending.textContent = pendientes;
+            elContPend.textContent = pendientes;
+            elContComp.textContent = hechos;
             
-            [elTotal, elDone, elPending].forEach(el => {
+            [elDone, elPending].forEach(el => {
                 el.classList.add('stat-bump');
                 setTimeout(() => el.classList.remove('stat-bump'), 200);
             });
-
-            document.getElementById('ventanaContadorPendientes').textContent = `(${pendientes})`;
-            document.getElementById('ventanaContadorComprados').textContent = `(${hechos})`;
         }
 
         function renderizar() {
@@ -663,13 +752,12 @@
             actualizarStats();
 
             if (pendientes.length === 0) {
-                listaPendientes.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">¡Agrega tu primer producto!</li>';
+                listaPendientes.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">No hay productos pendientes</li>';
             } else {
                 pendientes.forEach((item, idx) => {
-                    const delay = idx * 50;
                     const li = document.createElement('li');
                     li.setAttribute('data-id', item.id);
-                    li.style.animationDelay = `${delay}ms`;
+                    li.style.animationDelay = (idx * 50) + 'ms';
                     li.innerHTML = `
                         <span class="item-text">${escapeHtml(item.texto)}</span>
                         <div class="item-actions">
@@ -685,11 +773,10 @@
                 listaComprados.innerHTML = '<li class="empty-state" style="animation:none;background:transparent;border:none;">Aún no has comprado nada</li>';
             } else {
                 comprados.forEach((item, idx) => {
-                    const delay = idx * 50;
                     const li = document.createElement('li');
                     li.className = 'done';
                     li.setAttribute('data-id', item.id);
-                    li.style.animationDelay = `${delay}ms`;
+                    li.style.animationDelay = (idx * 50) + 'ms';
                     li.innerHTML = `
                         <span class="item-text">${escapeHtml(item.texto)}</span>
                         <div class="item-actions">
